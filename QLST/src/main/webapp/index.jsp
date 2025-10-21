@@ -14,7 +14,7 @@
     <ul>
         <li><a href="login">Đăng nhập</a></li>
         <li><a href="register">Đăng ký thành viên</a></li>
-        <li><a href="jsp/product_list.jsp">Xem sản phẩm</a></li>
+        <li><a href="products">Xem sản phẩm</a></li>
     </ul>
 </nav>
 <main>
