@@ -1,13 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-enabled');
 
-    const navLinks = document.querySelectorAll('.main-nav a');
     const currentPath = window.location.pathname.replace(/\/$/, '');
+    const highlightLink = (selector, activeClass) => {
+        document.querySelectorAll(selector).forEach(link => {
+            const href = link.getAttribute('href') || '';
+            const linkPath = link.pathname ? link.pathname.replace(/\/$/, '') : href.replace(/\/$/, '');
 
-    navLinks.forEach(link => {
-        const linkPath = link.pathname.replace(/\/$/, '');
-        if (linkPath === currentPath || (link.getAttribute('href') === 'index.jsp' && currentPath.endsWith('/'))) {
-            link.classList.add('is-active');
-        }
-    });
+            if (!href || href.startsWith('#')) {
+                return;
+            }
+
+            if (link.classList.contains(activeClass)) {
+                return;
+            }
+
+            if (linkPath && linkPath === currentPath) {
+                link.classList.add(activeClass);
+            }
+        });
+    };
+
+    highlightLink('.primary-nav a', 'is-active');
+    highlightLink('.sidebar-nav a', 'is-current');
 });
