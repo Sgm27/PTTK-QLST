@@ -179,6 +179,28 @@ public class OrderDAO {
         }
     }
 
+    public List<Order> findByCustomerAndDateRange(Long customerId, LocalDate startDate, LocalDate endDate)
+            throws SQLException {
+        try (Connection connection = DBConnection.getConnection()) {
+            String sql = "SELECT id, customer_id, status, order_date, total_amount, delivery_address, order_type "
+                    + "FROM orders WHERE customer_id = ? AND order_date BETWEEN ? AND ? ORDER BY order_date DESC";
+            List<Order> orders = new ArrayList<>();
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, customerId);
+                statement.setTimestamp(2, Timestamp.valueOf(startDate.atStartOfDay()));
+                statement.setTimestamp(3, Timestamp.valueOf(endDate.atTime(LocalTime.MAX)));
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        Order order = mapOrder(resultSet);
+                        order.getItems().addAll(findItemsByOrderId(connection, order.getId()));
+                        orders.add(order);
+                    }
+                }
+            }
+            return orders;
+        }
+    }
+
     public List<CustomerRevenue> calculateCustomerRevenue(LocalDate startDate, LocalDate endDate) throws SQLException {
         try (Connection connection = DBConnection.getConnection()) {
             String sql = "SELECT o.customer_id, u.full_name, SUM(o.total_amount) AS revenue, COUNT(*) AS order_count "

@@ -493,7 +493,61 @@ tbody tr:nth-child(odd) {
 
 .table-actions {
     display: flex;
+    justify-content: flex-end;
+    align-items: center;
     gap: 0.5rem;
+}
+
+.inline-form {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0;
+}
+
+.btn-small {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.table-row-selected {
+    background-color: rgba(58, 142, 246, 0.18);
+    font-weight: 600;
+}
+
+.customer-detail {
+    gap: 1.25rem;
+}
+
+.customer-detail .section-header {
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stat-chip {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-sm);
+    background-color: rgba(58, 142, 246, 0.12);
+    border: 1px solid rgba(58, 142, 246, 0.25);
+    font-weight: 600;
+    color: var(--color-primary-strong);
+}
+
+.highlight-text {
+    color: var(--color-primary-strong);
+}
+
+.empty-state {
+    margin: 0;
+    color: var(--color-muted);
+    font-style: italic;
 }
 
 .site-footer {
