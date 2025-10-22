@@ -54,13 +54,32 @@ public class ManagerReportServlet extends HttpServlet {
         try {
             LocalDate startDate = LocalDate.parse(startDateParam);
             LocalDate endDate = LocalDate.parse(endDateParam);
+            req.setAttribute("startDate", startDate);
+            req.setAttribute("endDate", endDate);
             if (endDate.isBefore(startDate)) {
                 req.setAttribute("error", "Ngày kết thúc phải sau ngày bắt đầu.");
             } else {
                 List<CustomerRevenue> revenueList = orderDAO.calculateCustomerRevenue(startDate, endDate);
                 req.setAttribute("customerRevenue", revenueList);
-                req.setAttribute("startDate", startDate);
-                req.setAttribute("endDate", endDate);
+                String customerIdParam = req.getParameter("customerId");
+                if (StringUtils.isNotBlank(customerIdParam)) {
+                    try {
+                        Long customerId = Long.valueOf(customerIdParam);
+                        List<Order> customerOrders = orderDAO.findByCustomerAndDateRange(customerId, startDate, endDate);
+                        req.setAttribute("selectedCustomerOrders", customerOrders);
+                        req.setAttribute("selectedCustomerTotal", calculateTotalRevenue(customerOrders));
+                        req.setAttribute("selectedCustomerId", customerId);
+                        revenueList.stream()
+                                .filter(item -> item.getCustomerId().equals(customerId))
+                                .map(CustomerRevenue::getCustomerName)
+                                .findFirst()
+                                .ifPresent(name -> req.setAttribute("selectedCustomerName", name));
+                    } catch (NumberFormatException ex) {
+                        req.setAttribute("error", "Mã khách hàng không hợp lệ.");
+                    } catch (SQLException sqlEx) {
+                        throw new ServletException("Không thể tải lịch sử giao dịch của khách hàng", sqlEx);
+                    }
+                }
             }
         } catch (DateTimeParseException e) {
             req.setAttribute("error", "Định dạng ngày không hợp lệ.");

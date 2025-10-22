@@ -83,20 +83,77 @@
                                         <th scope="col">Họ tên</th>
                                         <th scope="col">Tổng doanh thu</th>
                                         <th scope="col">Số đơn hàng</th>
+                                        <th scope="col" class="text-right">Chi tiết</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach var="item" items="${customerRevenue}">
-                                        <tr>
+                                        <tr class="${item.customerId == selectedCustomerId ? 'table-row-selected' : ''}">
                                             <td>${item.customerId}</td>
                                             <td>${item.customerName}</td>
                                             <td>${item.revenue}</td>
-                                            <td>${item.orderCount}</td>
+                                            <td class="text-right">${item.orderCount}</td>
+                                            <td class="table-actions">
+                                                <form action="${pageContext.request.contextPath}/reports" method="post" class="inline-form">
+                                                    <input type="hidden" name="startDate" value="${startDate}">
+                                                    <input type="hidden" name="endDate" value="${endDate}">
+                                                    <input type="hidden" name="customerId" value="${item.customerId}">
+                                                    <button type="submit" class="btn btn-secondary btn-small">Xem chi tiết</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </c:if>
+
+                    <c:if test="${not empty selectedCustomerId}">
+                        <div class="table-card customer-detail" aria-labelledby="customer-transactions" aria-live="polite">
+                            <div class="section-header">
+                                <div>
+                                    <h3 id="customer-transactions">Chi tiết giao dịch: <span class="highlight-text"><c:out value="${selectedCustomerName}" default="Khách hàng #${selectedCustomerId}"/></span></h3>
+                                    <p>Khoảng thời gian: <strong>${startDate}</strong> đến <strong>${endDate}</strong></p>
+                                </div>
+                                <div class="stat-chip">
+                                    <span>Tổng chi tiêu</span>
+                                    <strong>${selectedCustomerTotal}</strong>
+                                </div>
+                            </div>
+                            <c:choose>
+                                <c:when test="${not empty selectedCustomerOrders}">
+                                    <div class="table-responsive">
+                                        <table aria-label="Danh sách giao dịch của khách hàng">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">Mã đơn</th>
+                                                <th scope="col">Ngày đặt</th>
+                                                <th scope="col">Trạng thái</th>
+                                                <th scope="col">Loại đơn</th>
+                                                <th scope="col">Địa chỉ giao hàng</th>
+                                                <th scope="col">Tổng tiền</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <c:forEach var="order" items="${selectedCustomerOrders}">
+                                                <tr>
+                                                    <td>${order.id}</td>
+                                                    <td><c:out value="${order.orderDate}"/></td>
+                                                    <td>${order.status}</td>
+                                                    <td>${order.orderType}</td>
+                                                    <td><c:out value="${order.deliveryAddress}" default="-"/></td>
+                                                    <td>${order.totalAmount}</td>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <p class="empty-state">Không có giao dịch nào của khách hàng trong khoảng thời gian đã chọn.</p>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </c:if>
                 </section>
