@@ -5,17 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const highlightLink = (selector, activeClass) => {
         document.querySelectorAll(selector).forEach(link => {
             const href = link.getAttribute('href') || '';
-            const linkPath = link.pathname ? link.pathname.replace(/\/$/, '') : href.replace(/\/$/, '');
-
             if (!href || href.startsWith('#')) {
                 return;
             }
 
-            if (link.classList.contains(activeClass)) {
+            const linkPath = link.pathname ? link.pathname.replace(/\/$/, '') : href.replace(/\/$/, '');
+            if (!linkPath) {
                 return;
             }
 
-            if (linkPath && linkPath === currentPath) {
+            const activeRoot = link.dataset.activeRoot
+                ? link.dataset.activeRoot.replace(/\/$/, '')
+                : linkPath;
+            const matchesCurrent = currentPath === linkPath || currentPath.startsWith(activeRoot + '/');
+            if (matchesCurrent) {
                 link.classList.add(activeClass);
             }
         });

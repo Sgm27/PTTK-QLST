@@ -31,6 +31,20 @@ public class CustomerDAO {
         }
     }
 
+    public Optional<Customer> findById(Long customerId) throws SQLException {
+        String sql = "SELECT id, user_id, full_name, email, phone_number, address, joined_at FROM customers WHERE id = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, customerId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
+                }
+            }
+            return Optional.empty();
+        }
+    }
+
     public void save(Connection connection, Customer customer) throws SQLException {
         String sql = "INSERT INTO customers (user_id, full_name, email, phone_number, address, joined_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";

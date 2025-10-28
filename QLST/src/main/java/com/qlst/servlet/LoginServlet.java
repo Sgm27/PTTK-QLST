@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("currentUser") != null) {
-            resp.sendRedirect(req.getContextPath() + "/reports");
+            resp.sendRedirect(req.getContextPath() + "/statistics/customers");
             return;
         }
 
@@ -65,7 +65,7 @@ public class LoginServlet extends HttpServlet {
             authenticated.setPasswordHash(null);
             HttpSession session = req.getSession(true);
             session.setAttribute("currentUser", authenticated);
-            resp.sendRedirect(req.getContextPath() + "/reports");
+            resp.sendRedirect(req.getContextPath() + "/statistics/customers");
         } catch (SQLException e) {
             throw new ServletException("Không thể xử lý đăng nhập: " + e.getMessage(), e);
         }
