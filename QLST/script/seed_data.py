@@ -23,7 +23,7 @@ USERS = [
         "full_name": "Nguyen Van Manager",
         "email": "manager@example.com",
         "phone_number": "0901112233",
-        "created_at": datetime(2024, 9, 1, 9, 0),
+        "created_at": datetime(2025, 10, 1, 9, 0),
     },
     {
         "username": "customer_anna",
@@ -32,7 +32,7 @@ USERS = [
         "full_name": "Pham Thi Anna",
         "email": "anna@example.com",
         "phone_number": "0911002200",
-        "created_at": datetime(2024, 9, 5, 14, 15),
+        "created_at": datetime(2025, 10, 5, 14, 15),
     },
     {
         "username": "customer_binh",
@@ -41,7 +41,7 @@ USERS = [
         "full_name": "Do Quang Binh",
         "email": "binh@example.com",
         "phone_number": "0911223344",
-        "created_at": datetime(2024, 9, 6, 10, 5),
+        "created_at": datetime(2025, 10, 6, 10, 5),
     },
     {
         "username": "customer_chi",
@@ -50,7 +50,7 @@ USERS = [
         "full_name": "Vu Mai Chi",
         "email": "chi@example.com",
         "phone_number": "0911334455",
-        "created_at": datetime(2024, 9, 7, 16, 40),
+        "created_at": datetime(2025, 10, 7, 16, 40),
     },
 ]
 
@@ -58,17 +58,17 @@ CUSTOMERS = [
     {
         "username": "customer_anna",
         "address": "123 Nguyen Trai, District 1, Ho Chi Minh City",
-        "joined_at": datetime(2024, 9, 5, 14, 30),
+        "joined_at": datetime(2025, 10, 5, 14, 30),
     },
     {
         "username": "customer_binh",
         "address": "56 Le Loi, District 1, Ho Chi Minh City",
-        "joined_at": datetime(2024, 9, 6, 10, 30),
+        "joined_at": datetime(2025, 10, 6, 10, 30),
     },
     {
         "username": "customer_chi",
         "address": "89 Tran Hung Dao, District 5, Ho Chi Minh City",
-        "joined_at": datetime(2024, 9, 7, 16, 55),
+        "joined_at": datetime(2025, 10, 7, 16, 55),
     },
 ]
 
@@ -76,25 +76,25 @@ TRANSACTIONS = [
     {
         "username": "customer_anna",
         "amount": Decimal("799.99"),
-        "transaction_date": datetime(2024, 9, 15, 10, 30),
+        "transaction_date": datetime(2025, 10, 15, 10, 30),
         "description": "Mua TV 4K và tai nghe không dây",
     },
     {
         "username": "customer_anna",
         "amount": Decimal("120.00"),
-        "transaction_date": datetime(2024, 9, 25, 9, 0),
+        "transaction_date": datetime(2025, 10, 25, 9, 0),
         "description": "Phụ kiện âm thanh",
     },
     {
         "username": "customer_binh",
         "amount": Decimal("1648.00"),
-        "transaction_date": datetime(2024, 9, 20, 15, 45),
+        "transaction_date": datetime(2025, 10, 20, 15, 45),
         "description": "Laptop chơi game và robot hút bụi",
     },
     {
         "username": "customer_chi",
         "amount": Decimal("1579.49"),
-        "transaction_date": datetime(2024, 9, 25, 11, 15),
+        "transaction_date": datetime(2025, 10, 25, 11, 15),
         "description": "Tủ lạnh thông minh và tai nghe",
     },
 ]

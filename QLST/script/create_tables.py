@@ -10,9 +10,9 @@ from db_utils import (
 
 DROP_STATEMENTS = [
     "SET FOREIGN_KEY_CHECKS = 0",
-    "DROP TABLE IF EXISTS transactions",
-    "DROP TABLE IF EXISTS customers",
-    "DROP TABLE IF EXISTS users",
+    """
+    DROP TABLE IF EXISTS order_items, orders, transactions, products, suppliers, customers, users
+    """,
     "SET FOREIGN_KEY_CHECKS = 1",
 ]
 
