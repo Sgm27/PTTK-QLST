@@ -32,99 +32,92 @@
     </div>
 </header>
 <main>
-    <section class="container page-hero">
-        <div>
-            <p class="page-hero__eyebrow">QLST Insight</p>
-            <h1 class="page-hero__title">Thống kê doanh thu theo khách hàng</h1>
-            <p class="page-hero__subtitle">
-                Lọc dữ liệu theo khoảng thời gian để xem tổng doanh thu, số giao dịch và truy cập nhanh tới chi tiết giao dịch của từng khách hàng.
-            </p>
-        </div>
-        <div class="surface-card form-shell" aria-labelledby="filter-heading">
-            <div>
-                <h2 class="section-title" id="filter-heading">Bộ lọc thời gian</h2>
-                <p class="section-subtitle">Chọn khoảng ngày để hệ thống tổng hợp doanh thu tương ứng.</p>
+    <section class="container analytics-layout">
+        <div class="analytics-header">
+            <div class="analytics-header__text">
+                <p class="analytics-header__eyebrow">QLST Insight</p>
+                <h1 class="analytics-header__title">Thống kê doanh thu theo khách hàng</h1>
+                <p class="analytics-header__description">
+                    Lọc dữ liệu theo khoảng thời gian để theo dõi doanh thu và truy cập nhanh tới chi tiết giao dịch của từng khách hàng.
+                </p>
             </div>
-
-            <c:if test="${not empty error}">
-                <div class="alert" role="alert">${error}</div>
-            </c:if>
-
-            <form action="${ctx}/statistics/customers" method="post" class="form-grid form-grid--two">
-                <div class="form-field">
-                    <label for="startDate">Ngày bắt đầu</label>
-                    <input type="date" id="startDate" name="startDate" value="${startDate}" required>
-                </div>
-                <div class="form-field">
-                    <label for="endDate">Ngày kết thúc</label>
-                    <input type="date" id="endDate" name="endDate" value="${endDate}" required>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="button button--primary">Xem báo cáo</button>
-                </div>
-            </form>
         </div>
 
-        <c:if test="${not empty customerRevenue}">
-            <c:set var="totalCustomers" value="${fn:length(customerRevenue)}"/>
-            <c:set var="topCustomer" value="${customerRevenue[0]}"/>
-            <div class="surface-card">
-                <h2 class="section-title">Tổng quan doanh thu</h2>
-                <div class="stats-grid">
-                    <div class="stat-tile">
-                        <span class="stat-tile__label">Số khách hàng</span>
-                        <span class="stat-tile__value">${totalCustomers}</span>
-                    </div>
-                    <div class="stat-tile">
-                        <span class="stat-tile__label">Doanh thu cao nhất</span>
-                        <span class="stat-tile__value"><fmt:formatNumber value="${topCustomer.revenue}" type="currency"/></span>
-                    </div>
-                    <div class="stat-tile">
-                        <span class="stat-tile__label">Giao dịch nhiều nhất</span>
-                        <span class="stat-tile__value">${topCustomer.transactionCount}</span>
-                    </div>
+        <div class="analytics-grid">
+            <div class="surface-card surface-card--tight analytics-grid__side" aria-labelledby="filter-heading">
+                <div class="analytics-card__header">
+                    <h2 class="section-title" id="filter-heading">Bộ lọc thời gian</h2>
+                    <p class="section-subtitle">Chọn khoảng ngày để hệ thống tổng hợp doanh thu tương ứng.</p>
                 </div>
+
+                <c:if test="${not empty error}">
+                    <div class="alert" role="alert">${error}</div>
+                </c:if>
+
+                <form action="${ctx}/statistics/customers" method="post" class="form-grid form-grid--two">
+                    <div class="form-field">
+                        <label for="startDate">Ngày bắt đầu</label>
+                        <input type="date" id="startDate" name="startDate" value="${startDate}" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="endDate">Ngày kết thúc</label>
+                        <input type="date" id="endDate" name="endDate" value="${endDate}" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="button button--primary">Xem báo cáo</button>
+                    </div>
+                </form>
             </div>
 
-            <div class="table-card" aria-labelledby="report-heading">
-                <div class="table-card__header">
-                    <h2 class="section-title" id="report-heading">Bảng xếp hạng khách hàng</h2>
-                    <p class="section-subtitle">Sắp xếp giảm dần theo tổng doanh thu của từng khách hàng.</p>
-                </div>
-                <div class="table-wrapper">
-                    <table aria-describedby="report-heading">
-                        <thead>
-                        <tr>
-                            <th scope="col">Mã KH</th>
-                            <th scope="col">Họ tên</th>
-                            <th scope="col">Tổng doanh thu</th>
-                            <th scope="col">Số giao dịch</th>
-                            <th scope="col" class="table-actions">Chi tiết</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach var="item" items="${customerRevenue}">
-                            <tr>
-                                <td>${item.customerId}</td>
-                                <td><c:out value="${item.customerName}"/></td>
-                                <td><fmt:formatNumber value="${item.revenue}" type="currency"/></td>
-                                <td>${item.transactionCount}</td>
-                                <td class="table-actions">
-                                    <a class="button button--ghost" href="${ctx}/statistics/transactions?customerId=${item.customerId}&amp;startDate=${startDate}&amp;endDate=${endDate}">Xem</a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </c:if>
-
-        <c:if test="${empty customerRevenue and not empty startDate and not empty endDate}">
-            <div class="empty-state" role="status">
-                <p>Không có dữ liệu giao dịch trong khoảng thời gian đã chọn.</p>
-            </div>
-        </c:if>
+            <c:choose>
+                <c:when test="${not empty customerRevenue}">
+                    <c:set var="totalCustomers" value="${fn:length(customerRevenue)}"/>
+                    <div class="data-panel analytics-grid__main" aria-labelledby="report-heading">
+                        <div class="data-panel__header">
+                            <h2 class="section-title" id="report-heading">Bảng xếp hạng khách hàng</h2>
+                            <p class="section-subtitle">
+                                Có ${totalCustomers} khách hàng phù hợp trong khoảng thời gian ${startDate} → ${endDate}.
+                            </p>
+                        </div>
+                        <div class="data-panel__body">
+                            <div class="table-wrapper">
+                                <table aria-describedby="report-heading">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Mã KH</th>
+                                        <th scope="col">Họ tên</th>
+                                        <th scope="col">Tổng doanh thu</th>
+                                        <th scope="col">Số giao dịch</th>
+                                        <th scope="col" class="table-actions">Chi tiết</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="item" items="${customerRevenue}">
+                                        <tr>
+                                            <td>${item.customerId}</td>
+                                            <td><c:out value="${item.customerName}"/></td>
+                                            <td><fmt:formatNumber value="${item.revenue}" type="currency"/></td>
+                                            <td>${item.transactionCount}</td>
+                                            <td class="table-actions">
+                                                <a class="button button--ghost" href="${ctx}/statistics/transactions?customerId=${item.customerId}&amp;startDate=${startDate}&amp;endDate=${endDate}">Xem</a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <c:if test="${not empty startDate and not empty endDate}">
+                        <div class="empty-state analytics-grid__full" role="status">
+                            <p>Không có dữ liệu giao dịch trong khoảng thời gian đã chọn.</p>
+                        </div>
+                    </c:if>
+                </c:otherwise>
+            </c:choose>
+        </div>
     </section>
 </main>
 <footer class="app-footer">
