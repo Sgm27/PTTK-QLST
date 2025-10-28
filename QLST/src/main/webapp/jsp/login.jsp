@@ -16,18 +16,15 @@
             <span>QLST</span>
         </a>
         <nav class="site-nav" aria-label="Điều hướng chính">
-            <a href="${pageContext.request.contextPath}/login" class="is-active">Đăng nhập</a>
+            <a href="${pageContext.request.contextPath}/login">Đăng nhập</a>
             <a href="${pageContext.request.contextPath}/register">Đăng ký thành viên</a>
             <a href="${pageContext.request.contextPath}/reports">Thống kê khách hàng</a>
         </nav>
     </div>
 </header>
 <main class="page-content">
-    <section class="card form-card" aria-labelledby="login-title">
-        <div>
-            <h1 id="login-title">Chào mừng quay lại</h1>
-            <p>Nhập thông tin tài khoản để truy cập phần thống kê doanh thu khách hàng.</p>
-        </div>
+    <section class="card stack" aria-labelledby="login-title">
+        <h1 id="login-title">Đăng nhập</h1>
 
         <c:if test="${not empty error}">
             <div class="alert" role="alert">${error}</div>
@@ -49,11 +46,11 @@
                 <button type="submit" class="btn">Đăng nhập</button>
             </div>
         </form>
-        <p>Chưa có tài khoản? <a href="${pageContext.request.contextPath}/register">Đăng ký ngay</a>.</p>
+        <p class="form-note">Chưa có tài khoản? <a href="${pageContext.request.contextPath}/register">Đăng ký</a></p>
     </section>
 </main>
 <footer class="site-footer">
-    <small>&copy; 2024 QLST &mdash; Truy cập an toàn cho nhân viên</small>
+    <small>&copy; 2024 QLST</small>
 </footer>
 <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
 </body>
