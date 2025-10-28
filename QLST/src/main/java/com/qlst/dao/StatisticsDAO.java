@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +23,13 @@ public class StatisticsDAO {
         String sql = "SELECT c.id AS customer_id, c.full_name, SUM(t.amount) AS revenue, COUNT(*) AS transaction_count "
                 + "FROM transactions t "
                 + "JOIN customers c ON t.customer_id = c.id "
-                + "WHERE t.transaction_date BETWEEN ? AND ? "
+                + "WHERE t.transaction_date >= ? AND t.transaction_date < ? "
                 + "GROUP BY c.id, c.full_name "
                 + "ORDER BY revenue DESC";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setTimestamp(1, Timestamp.valueOf(startDate.atStartOfDay()));
-            statement.setTimestamp(2, Timestamp.valueOf(endDate.atTime(LocalTime.MAX)));
+            statement.setTimestamp(2, Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
             List<CustomerRevenue> results = new ArrayList<>();
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
@@ -48,13 +47,13 @@ public class StatisticsDAO {
     public List<Transaction> findTransactionsByCustomerAndDateRange(Long customerId, LocalDate startDate, LocalDate endDate)
             throws SQLException {
         String sql = "SELECT id, customer_id, amount, transaction_date, description "
-                + "FROM transactions WHERE customer_id = ? AND transaction_date BETWEEN ? AND ? "
+                + "FROM transactions WHERE customer_id = ? AND transaction_date >= ? AND transaction_date < ? "
                 + "ORDER BY transaction_date DESC";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, customerId);
             statement.setTimestamp(2, Timestamp.valueOf(startDate.atStartOfDay()));
-            statement.setTimestamp(3, Timestamp.valueOf(endDate.atTime(LocalTime.MAX)));
+            statement.setTimestamp(3, Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
             List<Transaction> transactions = new ArrayList<>();
             try (ResultSet rs = statement.executeQuery()) {
                 while (rs.next()) {
