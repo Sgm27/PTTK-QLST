@@ -16,17 +16,32 @@
             <span>QLST</span>
         </a>
         <nav class="site-nav" aria-label="Điều hướng chính">
-            <a href="${pageContext.request.contextPath}/login">Đăng nhập</a>
-            <a href="${pageContext.request.contextPath}/register" class="is-active">Đăng ký thành viên</a>
-            <a href="${pageContext.request.contextPath}/reports">Thống kê khách hàng</a>
+            <a href="${pageContext.request.contextPath}/login" class="nav-link">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation"><path d="M12 12a4.5 4.5 0 10-4.5-4.5A4.51 4.51 0 0012 12zm0 2c-3.6 0-6.5 1.87-6.5 4.17V20h13v-1.83C18.5 15.87 15.6 14 12 14z"/></svg>
+                </span>
+                <span class="nav-label">Đăng nhập</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/register" class="nav-link is-active">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation"><path d="M12 12a5 5 0 10-5-5 5 5 0 005 5zm7 1h-3v-3h-2v3h-3v2h3v3h2v-3h3zM4 18.25C4 15.9 7.13 14 12 14v2c-3.87 0-6 1.23-6 2.25V20H4z"/></svg>
+                </span>
+                <span class="nav-label">Đăng ký</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/reports" class="nav-link">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation"><path d="M5 4h3v16H5zm5 6h3v10h-3zm5-4h3v14h-3z"/></svg>
+                </span>
+                <span class="nav-label">Thống kê</span>
+            </a>
         </nav>
     </div>
 </header>
 <main class="page-content">
     <section class="card form-card" aria-labelledby="register-title">
-        <div>
+        <div class="form-card__header">
             <h1 id="register-title">Đăng ký tài khoản khách hàng</h1>
-            <p>Vui lòng cung cấp thông tin chính xác để hệ thống ghi nhận thành viên mới.</p>
+            <p>Điền đầy đủ thông tin cần thiết để kích hoạt chương trình khách hàng thân thiết và quản lý ưu đãi.</p>
         </div>
 
         <c:if test="${not empty errors}">
@@ -67,9 +82,10 @@
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn">Đăng ký</button>
-                <a class="btn btn-secondary" href="${pageContext.request.contextPath}/login">Hủy</a>
+                <a class="btn btn-ghost" href="${pageContext.request.contextPath}/login">Hủy</a>
             </div>
         </form>
+        <p class="form-footnote">Tài khoản sẽ được kích hoạt ngay khi thông tin hợp lệ.</p>
     </section>
 </main>
 <footer class="site-footer">

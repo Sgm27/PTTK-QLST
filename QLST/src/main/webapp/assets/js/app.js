@@ -15,7 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (linkPath && linkPath === currentPath) {
+            if (!linkPath) {
+                return;
+            }
+
+            const isExactMatch = linkPath === currentPath;
+            const isPrefixMatch = linkPath !== '' && linkPath !== '/' && currentPath.startsWith(linkPath + '/');
+
+            if (isExactMatch || isPrefixMatch) {
                 link.classList.add(activeClass);
             }
         });
