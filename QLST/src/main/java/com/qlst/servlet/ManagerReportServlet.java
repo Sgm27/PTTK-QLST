@@ -34,61 +34,98 @@ public class ManagerReportServlet extends HttpServlet {
         processRequest(req, resp, true);
     }
 
-    private void processRequest(HttpServletRequest req, HttpServletResponse resp, boolean validateInputs)
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp, boolean triggeredByPost)
             throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        boolean detailView = pathInfo != null && pathInfo.contains("customer");
+
         String startDateParam = StringUtils.trimToEmpty(req.getParameter("startDate"));
         String endDateParam = StringUtils.trimToEmpty(req.getParameter("endDate"));
+        boolean shouldValidate = triggeredByPost || "true".equals(req.getParameter("submitted"));
 
-        if (StringUtils.isNotBlank(startDateParam)) {
-            req.setAttribute("startDate", startDateParam);
-        }
-        if (StringUtils.isNotBlank(endDateParam)) {
-            req.setAttribute("endDate", endDateParam);
-        }
+        req.setAttribute("startDate", startDateParam);
+        req.setAttribute("endDate", endDateParam);
 
         if (StringUtils.isBlank(startDateParam) || StringUtils.isBlank(endDateParam)) {
-            if (validateInputs) {
+            if (shouldValidate) {
                 req.setAttribute("error", "Vui lòng chọn khoảng thời gian hợp lệ.");
             }
-            req.getRequestDispatcher("/jsp/customer_stat.jsp").forward(req, resp);
+            forwardToList(req, resp);
             return;
         }
 
         try {
             LocalDate startDate = LocalDate.parse(startDateParam);
             LocalDate endDate = LocalDate.parse(endDateParam);
+
             if (endDate.isBefore(startDate)) {
                 req.setAttribute("error", "Ngày kết thúc phải sau ngày bắt đầu.");
-            } else {
-                List<CustomerRevenue> revenueList = orderDAO.calculateCustomerRevenue(startDate, endDate);
-                req.setAttribute("customerRevenue", revenueList);
-
-                String customerIdParam = req.getParameter("customerId");
-                if (StringUtils.isNotBlank(customerIdParam)) {
-                    try {
-                        Long customerId = Long.valueOf(customerIdParam);
-                        List<Order> customerOrders = orderDAO.findByCustomerAndDateRange(customerId, startDate, endDate);
-                        req.setAttribute("selectedCustomerOrders", customerOrders);
-                        req.setAttribute("selectedCustomerTotal", calculateTotalRevenue(customerOrders));
-                        req.setAttribute("selectedCustomerId", customerId);
-                        revenueList.stream()
-                                .filter(item -> item.getCustomerId().equals(customerId))
-                                .map(CustomerRevenue::getCustomerName)
-                                .findFirst()
-                                .ifPresent(name -> req.setAttribute("selectedCustomerName", name));
-                    } catch (NumberFormatException ex) {
-                        req.setAttribute("error", "Mã khách hàng không hợp lệ.");
-                    } catch (SQLException sqlEx) {
-                        throw new ServletException("Không thể tải lịch sử giao dịch của khách hàng", sqlEx);
-                    }
-                }
+                forwardToList(req, resp);
+                return;
             }
+
+            List<CustomerRevenue> revenueList = orderDAO.calculateCustomerRevenue(startDate, endDate);
+            req.setAttribute("customerRevenue", revenueList);
+
+            if (detailView) {
+                handleDetailView(req, resp, startDate, endDate, revenueList);
+                return;
+            }
+
+            forwardToList(req, resp);
         } catch (DateTimeParseException e) {
             req.setAttribute("error", "Định dạng ngày không hợp lệ.");
+            forwardToList(req, resp);
         } catch (SQLException e) {
             throw new ServletException("Không thể tạo báo cáo doanh thu", e);
         }
+    }
 
+    private void handleDetailView(HttpServletRequest req, HttpServletResponse resp,
+                                  LocalDate startDate, LocalDate endDate,
+                                  List<CustomerRevenue> revenueList)
+            throws ServletException, IOException {
+        String customerIdParam = req.getParameter("customerId");
+        if (StringUtils.isBlank(customerIdParam)) {
+            req.setAttribute("error", "Vui lòng chọn khách hàng cần xem chi tiết.");
+            forwardToList(req, resp);
+            return;
+        }
+
+        try {
+            Long customerId = Long.valueOf(customerIdParam);
+            CustomerRevenue summary = revenueList.stream()
+                    .filter(item -> item.getCustomerId().equals(customerId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (summary == null) {
+                req.setAttribute("error", "Không tìm thấy khách hàng trong khoảng thời gian đã chọn.");
+                forwardToList(req, resp);
+                return;
+            }
+
+            List<Order> customerOrders = orderDAO.findByCustomerAndDateRange(customerId, startDate, endDate);
+            req.setAttribute("selectedCustomerOrders", customerOrders);
+            req.setAttribute("selectedCustomerId", customerId);
+            req.setAttribute("selectedCustomerName", summary.getCustomerName());
+            req.setAttribute("selectedCustomerOrderCount", summary.getOrderCount());
+
+            BigDecimal total = summary.getRevenue() != null
+                    ? summary.getRevenue()
+                    : calculateTotalRevenue(customerOrders);
+            req.setAttribute("selectedCustomerTotal", total);
+
+            req.getRequestDispatcher("/jsp/customer_detail.jsp").forward(req, resp);
+        } catch (NumberFormatException ex) {
+            req.setAttribute("error", "Mã khách hàng không hợp lệ.");
+            forwardToList(req, resp);
+        } catch (SQLException sqlEx) {
+            throw new ServletException("Không thể tải lịch sử giao dịch của khách hàng", sqlEx);
+        }
+    }
+
+    private void forwardToList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/jsp/customer_stat.jsp").forward(req, resp);
     }
 

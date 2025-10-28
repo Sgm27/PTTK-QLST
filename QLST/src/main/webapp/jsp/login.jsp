@@ -16,17 +16,32 @@
             <span>QLST</span>
         </a>
         <nav class="site-nav" aria-label="Điều hướng chính">
-            <a href="${pageContext.request.contextPath}/login" class="is-active">Đăng nhập</a>
-            <a href="${pageContext.request.contextPath}/register">Đăng ký thành viên</a>
-            <a href="${pageContext.request.contextPath}/reports">Thống kê khách hàng</a>
+            <a href="${pageContext.request.contextPath}/login" class="nav-link is-active">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation"><path d="M12 12a4.5 4.5 0 10-4.5-4.5A4.51 4.51 0 0012 12zm0 2c-3.6 0-6.5 1.87-6.5 4.17V20h13v-1.83C18.5 15.87 15.6 14 12 14z"/></svg>
+                </span>
+                <span class="nav-label">Đăng nhập</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/register" class="nav-link">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation"><path d="M12 12a5 5 0 10-5-5 5 5 0 005 5zm7 1h-3v-3h-2v3h-3v2h3v3h2v-3h3zM4 18.25C4 15.9 7.13 14 12 14v2c-3.87 0-6 1.23-6 2.25V20H4z"/></svg>
+                </span>
+                <span class="nav-label">Đăng ký</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/reports" class="nav-link">
+                <span class="nav-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="presentation"><path d="M5 4h3v16H5zm5 6h3v10h-3zm5-4h3v14h-3z"/></svg>
+                </span>
+                <span class="nav-label">Thống kê</span>
+            </a>
         </nav>
     </div>
 </header>
 <main class="page-content">
     <section class="card form-card" aria-labelledby="login-title">
-        <div>
+        <div class="form-card__header">
             <h1 id="login-title">Chào mừng quay lại</h1>
-            <p>Nhập thông tin tài khoản để truy cập phần thống kê doanh thu khách hàng.</p>
+            <p>Đăng nhập để truy cập bảng điều khiển thống kê và quản lý dữ liệu khách hàng.</p>
         </div>
 
         <c:if test="${not empty error}">
@@ -47,9 +62,10 @@
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn">Đăng nhập</button>
+                <a class="btn btn-ghost" href="${pageContext.request.contextPath}/register">Tạo tài khoản mới</a>
             </div>
         </form>
-        <p>Chưa có tài khoản? <a href="${pageContext.request.contextPath}/register">Đăng ký ngay</a>.</p>
+        <p class="form-footnote">Quên mật khẩu? Liên hệ quản trị viên để được hỗ trợ cấp lại.</p>
     </section>
 </main>
 <footer class="site-footer">
