@@ -30,13 +30,17 @@
 </header>
 <main>
     <section class="container page-hero">
-        <div>
+        <div class="page-hero__content">
             <p class="page-hero__eyebrow">Hệ sinh thái QLST</p>
             <h1 class="page-hero__title">Bảng điều khiển quản lý bán lẻ chuyên nghiệp</h1>
             <p class="page-hero__subtitle">
                 Theo dõi khách hàng, doanh thu và giao dịch trong một giao diện tối giản hai tông màu xanh
                 dương - trắng, tối ưu cho tốc độ ra quyết định của đội ngũ vận hành.
             </p>
+            <div class="hero-actions">
+                <a class="button button--primary" href="${ctx}/login">Đăng nhập ngay</a>
+                <a class="button button--ghost" href="${ctx}/register">Tạo tài khoản mới</a>
+            </div>
         </div>
         <div class="surface-card surface-card--soft">
             <h2 class="section-title">Sẵn sàng vận hành ngay hôm nay</h2>
@@ -56,22 +60,37 @@
                 </div>
             </div>
         </div>
+    </section>
+    <section class="container quick-actions-section">
+        <div class="quick-actions-section__intro">
+            <h2 class="section-title">Bắt đầu với những thao tác quan trọng</h2>
+            <p class="section-subtitle">Chúng tôi gom các bước thường dùng vào những thẻ hành động rõ ràng, mỗi thẻ có nút bấm riêng để bạn truy cập nhanh.</p>
+        </div>
         <div class="quick-actions" aria-label="Lối tắt">
-            <a class="action-card" href="${ctx}/login">
-                <h3 class="action-card__title">Truy cập bảng điều khiển</h3>
-                <p class="section-subtitle">Đăng nhập để xem báo cáo doanh thu theo thời gian thực.</p>
-                <span class="action-card__meta">Bắt đầu ngay</span>
-            </a>
-            <a class="action-card" href="${ctx}/register">
-                <h3 class="action-card__title">Tạo tài khoản khách hàng</h3>
-                <p class="section-subtitle">Đăng ký mới với kiểm soát quyền hạn rõ ràng.</p>
-                <span class="action-card__meta">Tạo hồ sơ</span>
-            </a>
-            <a class="action-card" href="${ctx}/statistics/customers">
-                <h3 class="action-card__title">Khám phá thống kê</h3>
-                <p class="section-subtitle">Lọc theo khoảng thời gian, xem thứ hạng doanh thu của từng khách hàng.</p>
-                <span class="action-card__meta">Xem báo cáo</span>
-            </a>
+            <article class="action-card">
+                <span class="action-card__icon" aria-hidden="true">📊</span>
+                <div class="action-card__body">
+                    <h3 class="action-card__title">Truy cập bảng điều khiển</h3>
+                    <p class="section-subtitle">Đăng nhập để xem báo cáo doanh thu theo thời gian thực.</p>
+                </div>
+                <a class="button button--primary action-card__cta" href="${ctx}/login">Đăng nhập</a>
+            </article>
+            <article class="action-card">
+                <span class="action-card__icon" aria-hidden="true">🧾</span>
+                <div class="action-card__body">
+                    <h3 class="action-card__title">Tạo tài khoản khách hàng</h3>
+                    <p class="section-subtitle">Đăng ký mới với kiểm soát quyền hạn rõ ràng.</p>
+                </div>
+                <a class="button button--ghost action-card__cta" href="${ctx}/register">Tạo hồ sơ</a>
+            </article>
+            <article class="action-card">
+                <span class="action-card__icon" aria-hidden="true">📈</span>
+                <div class="action-card__body">
+                    <h3 class="action-card__title">Khám phá thống kê</h3>
+                    <p class="section-subtitle">Lọc theo khoảng thời gian, xem thứ hạng doanh thu của từng khách hàng.</p>
+                </div>
+                <a class="button button--ghost action-card__cta" href="${ctx}/statistics/customers">Xem báo cáo</a>
+            </article>
         </div>
     </section>
 </main>
