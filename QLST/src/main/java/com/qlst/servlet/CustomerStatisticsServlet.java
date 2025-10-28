@@ -34,21 +34,14 @@ public class CustomerStatisticsServlet extends HttpServlet {
 
     private void handleRequest(HttpServletRequest req, HttpServletResponse resp, boolean validateInputs)
             throws ServletException, IOException {
-        String startParam = StringUtils.trimToEmpty(req.getParameter("startDate"));
-        String endParam = StringUtils.trimToEmpty(req.getParameter("endDate"));
+        String startParam = StringUtils.trimToNull(req.getParameter("startDate"));
+        String endParam = StringUtils.trimToNull(req.getParameter("endDate"));
+
+        req.setAttribute("startDate", StringUtils.defaultString(startParam));
+        req.setAttribute("endDate", StringUtils.defaultString(endParam));
 
         boolean hasCustomRange = StringUtils.isNotBlank(startParam) && StringUtils.isNotBlank(endParam);
-        if (!hasCustomRange && !validateInputs) {
-            LocalDate defaultEnd = LocalDate.now();
-            LocalDate defaultStart = defaultEnd.minusDays(29);
-            startParam = defaultStart.toString();
-            endParam = defaultEnd.toString();
-        }
-
-        req.setAttribute("startDate", startParam);
-        req.setAttribute("endDate", endParam);
-
-        if (StringUtils.isBlank(startParam) || StringUtils.isBlank(endParam)) {
+        if (!hasCustomRange) {
             if (validateInputs) {
                 req.setAttribute("error", "Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc.");
             }

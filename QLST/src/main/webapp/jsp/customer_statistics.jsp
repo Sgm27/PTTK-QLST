@@ -136,11 +136,18 @@
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <c:if test="${not empty startDate and not empty endDate}">
-                        <div class="empty-state analytics-grid__full" role="status">
-                            <p>Không có dữ liệu giao dịch trong khoảng thời gian đã chọn.</p>
-                        </div>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${not empty startDate and not empty endDate}">
+                            <div class="empty-state analytics-grid__full" role="status">
+                                <p>Không có dữ liệu giao dịch trong khoảng thời gian đã chọn.</p>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="empty-state analytics-grid__full" role="status">
+                                <p>Vui lòng chọn ngày bắt đầu, ngày kết thúc và nhấn "Xem báo cáo" để xem danh sách khách hàng.</p>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </c:otherwise>
             </c:choose>
         </div>
