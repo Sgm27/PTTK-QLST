@@ -56,7 +56,7 @@
                             <th scope="col">Mã khách hàng</th>
                             <th scope="col">Họ tên</th>
                             <th scope="col">Tổng doanh thu</th>
-                            <th scope="col">Số đơn</th>
+                            <th scope="col">Số giao dịch</th>
                             <th scope="col" class="table-actions">Chi tiết</th>
                         </tr>
                         </thead>
@@ -66,7 +66,7 @@
                                 <td>${item.customerId}</td>
                                 <td>${item.customerName}</td>
                                 <td>${item.revenue}</td>
-                                <td>${item.orderCount}</td>
+                                <td>${item.transactionCount}</td>
                                 <td class="table-actions">
                                     <form action="${pageContext.request.contextPath}/reports" method="post" class="inline-form">
                                         <input type="hidden" name="startDate" value="${startDate}">
@@ -97,28 +97,24 @@
                     </div>
                 </div>
                 <c:choose>
-                    <c:when test="${not empty selectedCustomerOrders}">
+                    <c:when test="${not empty selectedCustomerTransactions}">
                         <div class="table-responsive">
                             <table aria-label="Danh sách giao dịch của khách hàng">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Mã đơn</th>
-                                    <th scope="col">Ngày đặt</th>
-                                    <th scope="col">Trạng thái</th>
-                                    <th scope="col">Loại đơn</th>
-                                    <th scope="col">Địa chỉ giao hàng</th>
-                                    <th scope="col">Tổng tiền</th>
+                                    <th scope="col">Mã giao dịch</th>
+                                    <th scope="col">Thời gian</th>
+                                    <th scope="col">Mô tả</th>
+                                    <th scope="col">Số tiền</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="order" items="${selectedCustomerOrders}">
+                                <c:forEach var="transaction" items="${selectedCustomerTransactions}">
                                     <tr>
-                                        <td>${order.id}</td>
-                                        <td><c:out value="${order.orderDate}"/></td>
-                                        <td>${order.status}</td>
-                                        <td>${order.orderType}</td>
-                                        <td><c:out value="${order.deliveryAddress}" default="-"/></td>
-                                        <td>${order.totalAmount}</td>
+                                        <td>${transaction.id}</td>
+                                        <td><c:out value="${transaction.transactionDate}"/></td>
+                                        <td><c:out value="${transaction.description}" default="-"/></td>
+                                        <td>${transaction.amount}</td>
                                     </tr>
                                 </c:forEach>
                                 </tbody>

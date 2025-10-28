@@ -1,5 +1,6 @@
 package com.qlst.dao;
 
+import com.qlst.entity.Customer;
 import com.qlst.entity.User;
 import com.qlst.util.DBConnection;
 
@@ -10,30 +11,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
- * Data access layer for {@link User} entities.
+ * Data access layer for {@link User} entities focused on authentication flows.
  */
 public class UserDAO {
 
-    public Optional<User> findById(Long id) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
-                    + "FROM users WHERE id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, id);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return Optional.of(mapRow(resultSet));
-                    }
-                }
-            }
-            return Optional.empty();
-        }
-    }
+    private final CustomerDAO customerDAO = new CustomerDAO();
 
     public Optional<User> findByUsername(String username) throws SQLException {
         try (Connection connection = DBConnection.getConnection()) {
@@ -67,73 +52,53 @@ public class UserDAO {
         }
     }
 
-    public List<User> findAll() throws SQLException {
+    /**
+     * Persist a new customer account including the associated customer profile in a single transaction.
+     */
+    public void createCustomerAccount(User user, Customer customer) throws SQLException {
         try (Connection connection = DBConnection.getConnection()) {
-            String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
-                    + "FROM users ORDER BY created_at DESC";
-            List<User> users = new ArrayList<>();
-            try (PreparedStatement statement = connection.prepareStatement(sql);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    users.add(mapRow(resultSet));
+            boolean originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+            try {
+                long userId = insertUser(connection, user);
+                customer.setUserId(userId);
+                customerDAO.save(connection, customer);
+                connection.commit();
+            } catch (SQLException ex) {
+                connection.rollback();
+                throw ex;
+            } finally {
+                connection.setAutoCommit(originalAutoCommit);
+            }
+        }
+    }
+
+    private long insertUser(Connection connection, User user) throws SQLException {
+        String sql = "INSERT INTO users (username, password_hash, role, full_name, email, phone_number, created_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        LocalDateTime createdAt = user.getCreatedAt();
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+            user.setCreatedAt(createdAt);
+        }
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getPasswordHash());
+            statement.setString(3, user.getRole());
+            statement.setString(4, user.getFullName());
+            statement.setString(5, user.getEmail());
+            statement.setString(6, user.getPhoneNumber());
+            statement.setTimestamp(7, Timestamp.valueOf(createdAt));
+            statement.executeUpdate();
+            try (ResultSet keys = statement.getGeneratedKeys()) {
+                if (keys.next()) {
+                    long id = keys.getLong(1);
+                    user.setId(id);
+                    return id;
                 }
             }
-            return users;
         }
-    }
-
-    public void save(User user) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            String sql = "INSERT INTO users (username, password_hash, role, full_name, email, phone_number, created_at) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            LocalDateTime createdAt = user.getCreatedAt();
-            if (createdAt == null) {
-                createdAt = LocalDateTime.now();
-                user.setCreatedAt(createdAt);
-            }
-            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, user.getUsername());
-                statement.setString(2, user.getPasswordHash());
-                statement.setString(3, user.getRole());
-                statement.setString(4, user.getFullName());
-                statement.setString(5, user.getEmail());
-                statement.setString(6, user.getPhoneNumber());
-                statement.setTimestamp(7, Timestamp.valueOf(createdAt));
-                statement.executeUpdate();
-                try (ResultSet keys = statement.getGeneratedKeys()) {
-                    if (keys.next()) {
-                        user.setId(keys.getLong(1));
-                    }
-                }
-            }
-        }
-    }
-
-    public void update(User user) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            String sql = "UPDATE users SET username = ?, password_hash = ?, role = ?, full_name = ?, email = ?, "
-                    + "phone_number = ? WHERE id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, user.getUsername());
-                statement.setString(2, user.getPasswordHash());
-                statement.setString(3, user.getRole());
-                statement.setString(4, user.getFullName());
-                statement.setString(5, user.getEmail());
-                statement.setString(6, user.getPhoneNumber());
-                statement.setLong(7, user.getId());
-                statement.executeUpdate();
-            }
-        }
-    }
-
-    public void delete(Long id) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            String sql = "DELETE FROM users WHERE id = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, id);
-                statement.executeUpdate();
-            }
-        }
+        throw new SQLException("Không thể lấy mã người dùng sau khi tạo tài khoản.");
     }
 
     private User mapRow(ResultSet resultSet) throws SQLException {
