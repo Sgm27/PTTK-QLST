@@ -31,7 +31,7 @@
     </div>
 </header>
 <main>
-    <section class="container analytics-layout">
+    <section class="container container--wide analytics-layout">
         <c:url var="backToStatisticsUrl" value="/statistics/customers">
             <c:param name="startDate" value="${empty startDate ? '' : startDate}"/>
             <c:param name="endDate" value="${empty endDate ? '' : endDate}"/>
