@@ -67,7 +67,7 @@
             </div>
         </div>
 
-        <div class="analytics-grid">
+        <div class="analytics-grid analytics-grid--stacked">
             <div class="surface-card surface-card--tight analytics-grid__side" aria-labelledby="filter-heading">
                 <div class="analytics-card__header">
                     <h2 class="section-title" id="filter-heading">Bộ lọc thời gian</h2>

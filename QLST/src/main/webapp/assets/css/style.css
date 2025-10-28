@@ -306,6 +306,10 @@ main {
     align-items: stretch;
 }
 
+.analytics-grid--stacked {
+    grid-template-columns: minmax(0, 1fr);
+}
+
 .analytics-grid__side,
 .analytics-grid__main {
     min-width: 0;
@@ -849,6 +853,15 @@ tbody tr:hover {
     .analytics-grid {
         grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
         align-items: start;
+    }
+
+    .analytics-grid--stacked {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+    }
+
+    .analytics-grid--stacked .analytics-grid__main {
+        grid-column: 1 / -1;
     }
 
     .analytics-grid--details {
