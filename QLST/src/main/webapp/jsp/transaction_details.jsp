@@ -78,6 +78,44 @@
         </c:if>
 
         <c:if test="${empty error}">
+            <c:if test="${not empty startDate}">
+                <fmt:parseDate value="${startDate}" pattern="yyyy-MM-dd" var="startDateObj"/>
+            </c:if>
+            <c:if test="${not empty endDate}">
+                <fmt:parseDate value="${endDate}" pattern="yyyy-MM-dd" var="endDateObj"/>
+            </c:if>
+
+            <div class="stats-grid analytics-summary" role="region" aria-label="Tổng quan giao dịch">
+                <div class="stat-tile">
+                    <span class="stat-tile__label">Ngày bắt đầu thống kê</span>
+                    <span class="stat-tile__value">
+                        <c:choose>
+                            <c:when test="${not empty startDateObj}">
+                                <fmt:formatDate value="${startDateObj}" pattern="dd/MM/yyyy"/>
+                            </c:when>
+                            <c:otherwise>-</c:otherwise>
+                        </c:choose>
+                    </span>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-tile__label">Ngày kết thúc thống kê</span>
+                    <span class="stat-tile__value">
+                        <c:choose>
+                            <c:when test="${not empty endDateObj}">
+                                <fmt:formatDate value="${endDateObj}" pattern="dd/MM/yyyy"/>
+                            </c:when>
+                            <c:otherwise>-</c:otherwise>
+                        </c:choose>
+                    </span>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-tile__label">Tổng giá trị giao dịch</span>
+                    <span class="stat-tile__value">
+                        <fmt:formatNumber value="${totalAmount}" type="currency"/>
+                    </span>
+                </div>
+            </div>
+
             <div class="analytics-grid analytics-grid--details">
                 <div class="surface-card surface-card--tight analytics-grid__side" aria-labelledby="customer-heading">
                     <p class="breadcrumb" aria-label="Đường dẫn">
@@ -107,12 +145,16 @@
                             <span class="meta-item__value"><c:out value="${empty customer.address ? 'Chưa cập nhật' : customer.address}"/></span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-item__label">Tổng chi tiêu</span>
-                            <span class="meta-item__value"><fmt:formatNumber value="${totalAmount}" type="currency"/></span>
-                        </div>
-                        <div class="meta-item">
                             <span class="meta-item__label">Khoảng thời gian</span>
-                            <span class="meta-item__value">${startDate} → ${endDate}</span>
+                            <span class="meta-item__value">
+                                <c:choose>
+                                    <c:when test="${not empty startDateObj and not empty endDateObj}">
+                                        <fmt:formatDate value="${startDateObj}" pattern="dd/MM/yyyy"/> →
+                                        <fmt:formatDate value="${endDateObj}" pattern="dd/MM/yyyy"/>
+                                    </c:when>
+                                    <c:otherwise>${startDate} → ${endDate}</c:otherwise>
+                                </c:choose>
+                            </span>
                         </div>
                     </div>
                 </div>
