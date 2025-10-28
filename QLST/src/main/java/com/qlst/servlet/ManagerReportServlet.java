@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Provides reporting views for managers.
@@ -27,26 +25,31 @@ public class ManagerReportServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            List<Order> orders = orderDAO.findAll();
-            req.setAttribute("totalRevenue", calculateTotalRevenue(orders));
-            req.setAttribute("ordersByStatus", aggregateByStatus(orders));
-            req.setAttribute("recentOrders", orders.stream().limit(10).collect(Collectors.toList()));
-            req.setAttribute("ordersCount", orders.size());
-        } catch (SQLException e) {
-            throw new ServletException("Không thể tải báo cáo", e);
-        }
-        req.getRequestDispatcher("/jsp/dashboard.jsp").forward(req, resp);
+        processRequest(req, resp, false);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String startDateParam = req.getParameter("startDate");
-        String endDateParam = req.getParameter("endDate");
+        processRequest(req, resp, true);
+    }
+
+    private void processRequest(HttpServletRequest req, HttpServletResponse resp, boolean validateInputs)
+            throws ServletException, IOException {
+        String startDateParam = StringUtils.trimToEmpty(req.getParameter("startDate"));
+        String endDateParam = StringUtils.trimToEmpty(req.getParameter("endDate"));
+
+        if (StringUtils.isNotBlank(startDateParam)) {
+            req.setAttribute("startDate", startDateParam);
+        }
+        if (StringUtils.isNotBlank(endDateParam)) {
+            req.setAttribute("endDate", endDateParam);
+        }
 
         if (StringUtils.isBlank(startDateParam) || StringUtils.isBlank(endDateParam)) {
-            req.setAttribute("error", "Vui lòng chọn khoảng thời gian hợp lệ.");
+            if (validateInputs) {
+                req.setAttribute("error", "Vui lòng chọn khoảng thời gian hợp lệ.");
+            }
             req.getRequestDispatcher("/jsp/customer_stat.jsp").forward(req, resp);
             return;
         }
@@ -54,13 +57,12 @@ public class ManagerReportServlet extends HttpServlet {
         try {
             LocalDate startDate = LocalDate.parse(startDateParam);
             LocalDate endDate = LocalDate.parse(endDateParam);
-            req.setAttribute("startDate", startDate);
-            req.setAttribute("endDate", endDate);
             if (endDate.isBefore(startDate)) {
                 req.setAttribute("error", "Ngày kết thúc phải sau ngày bắt đầu.");
             } else {
                 List<CustomerRevenue> revenueList = orderDAO.calculateCustomerRevenue(startDate, endDate);
                 req.setAttribute("customerRevenue", revenueList);
+
                 String customerIdParam = req.getParameter("customerId");
                 if (StringUtils.isNotBlank(customerIdParam)) {
                     try {
@@ -86,6 +88,7 @@ public class ManagerReportServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new ServletException("Không thể tạo báo cáo doanh thu", e);
         }
+
         req.getRequestDispatcher("/jsp/customer_stat.jsp").forward(req, resp);
     }
 
@@ -94,11 +97,5 @@ public class ManagerReportServlet extends HttpServlet {
                 .map(Order::getTotalAmount)
                 .filter(amount -> amount != null)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private Map<String, Long> aggregateByStatus(List<Order> orders) {
-        return orders.stream()
-                .collect(Collectors.groupingBy(order -> StringUtils.defaultIfBlank(order.getStatus(), "KHÁC"),
-                        Collectors.counting()));
     }
 }

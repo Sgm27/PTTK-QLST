@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles customer and employee registration.
+ * Handles customer registration.
  */
 public class RegisterServlet extends HttpServlet {
 
@@ -37,7 +37,6 @@ public class RegisterServlet extends HttpServlet {
         String phone = StringUtils.trimToEmpty(req.getParameter("phone"));
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
-        String role = StringUtils.defaultIfBlank(req.getParameter("role"), "CUSTOMER");
 
         List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(username)) {
@@ -69,7 +68,7 @@ public class RegisterServlet extends HttpServlet {
 
         if (!errors.isEmpty()) {
             req.setAttribute("errors", errors);
-            req.setAttribute("formData", new FormData(username, fullName, email, phone, role));
+            req.setAttribute("formData", new FormData(username, fullName, email, phone));
             req.getRequestDispatcher("/jsp/register.jsp").forward(req, resp);
             return;
         }
@@ -79,7 +78,7 @@ public class RegisterServlet extends HttpServlet {
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPhoneNumber(phone);
-        user.setRole(role);
+        user.setRole("CUSTOMER");
         user.setPasswordHash(PasswordUtil.hashPassword(password));
         user.setCreatedAt(LocalDateTime.now());
 
@@ -97,14 +96,12 @@ public class RegisterServlet extends HttpServlet {
         private final String fullName;
         private final String email;
         private final String phone;
-        private final String role;
 
-        private FormData(String username, String fullName, String email, String phone, String role) {
+        private FormData(String username, String fullName, String email, String phone) {
             this.username = username;
             this.fullName = fullName;
             this.email = email;
             this.phone = phone;
-            this.role = role;
         }
 
         public String getUsername() {
@@ -123,8 +120,5 @@ public class RegisterServlet extends HttpServlet {
             return phone;
         }
 
-        public String getRole() {
-            return role;
-        }
     }
 }

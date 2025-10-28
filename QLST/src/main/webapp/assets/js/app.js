@@ -21,6 +21,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    highlightLink('.primary-nav a', 'is-active');
-    highlightLink('.sidebar-nav a', 'is-current');
+    highlightLink('.site-nav a', 'is-active');
 });
