@@ -58,6 +58,10 @@
                 <input type="text" id="phone" name="phone" value="${formData != null ? formData.phone : ''}">
             </div>
             <div>
+                <label for="address">Địa chỉ</label>
+                <input type="text" id="address" name="address" value="${formData != null ? formData.address : ''}">
+            </div>
+            <div>
                 <label for="password">Mật khẩu</label>
                 <input type="password" id="password" name="password" required>
             </div>

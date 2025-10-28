@@ -9,13 +9,13 @@ public class CustomerRevenue {
     private final Long customerId;
     private final String customerName;
     private final BigDecimal revenue;
-    private final Long orderCount;
+    private final Long transactionCount;
 
-    public CustomerRevenue(Long customerId, String customerName, BigDecimal revenue, Long orderCount) {
+    public CustomerRevenue(Long customerId, String customerName, BigDecimal revenue, Long transactionCount) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.revenue = revenue;
-        this.orderCount = orderCount;
+        this.transactionCount = transactionCount;
     }
 
     public Long getCustomerId() {
@@ -30,7 +30,7 @@ public class CustomerRevenue {
         return revenue;
     }
 
-    public Long getOrderCount() {
-        return orderCount;
+    public Long getTransactionCount() {
+        return transactionCount;
     }
 }

@@ -2,6 +2,8 @@
 Utility helpers shared by the database setup scripts.
 
 The scripts aim to work with either ``mysql-connector-python`` or ``PyMySQL``.
+"""Shared helpers for the database management scripts.
+
 If neither driver is available the caller receives a descriptive error that
 includes the connection details that were attempted.
 """

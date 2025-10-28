@@ -1,6 +1,7 @@
 package com.qlst.servlet;
 
 import com.qlst.dao.UserDAO;
+import com.qlst.entity.Customer;
 import com.qlst.entity.User;
 import com.qlst.util.PasswordUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,7 @@ public class RegisterServlet extends HttpServlet {
         String fullName = StringUtils.trimToEmpty(req.getParameter("fullName"));
         String email = StringUtils.trimToEmpty(req.getParameter("email"));
         String phone = StringUtils.trimToEmpty(req.getParameter("phone"));
+        String address = StringUtils.trimToEmpty(req.getParameter("address"));
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
 
@@ -68,7 +70,7 @@ public class RegisterServlet extends HttpServlet {
 
         if (!errors.isEmpty()) {
             req.setAttribute("errors", errors);
-            req.setAttribute("formData", new FormData(username, fullName, email, phone));
+            req.setAttribute("formData", new FormData(username, fullName, email, phone, address));
             req.getRequestDispatcher("/jsp/register.jsp").forward(req, resp);
             return;
         }
@@ -82,8 +84,15 @@ public class RegisterServlet extends HttpServlet {
         user.setPasswordHash(PasswordUtil.hashPassword(password));
         user.setCreatedAt(LocalDateTime.now());
 
+        Customer customer = new Customer();
+        customer.setFullName(fullName);
+        customer.setEmail(email);
+        customer.setPhoneNumber(phone);
+        customer.setAddress(StringUtils.defaultIfBlank(address, null));
+        customer.setJoinedAt(LocalDateTime.now());
+
         try {
-            userDAO.save(user);
+            userDAO.createCustomerAccount(user, customer);
         } catch (SQLException e) {
             throw new ServletException("Không thể lưu người dùng mới", e);
         }
@@ -96,12 +105,14 @@ public class RegisterServlet extends HttpServlet {
         private final String fullName;
         private final String email;
         private final String phone;
+        private final String address;
 
-        private FormData(String username, String fullName, String email, String phone) {
+        private FormData(String username, String fullName, String email, String phone, String address) {
             this.username = username;
             this.fullName = fullName;
             this.email = email;
             this.phone = phone;
+            this.address = address;
         }
 
         public String getUsername() {
@@ -118,6 +129,10 @@ public class RegisterServlet extends HttpServlet {
 
         public String getPhone() {
             return phone;
+        }
+
+        public String getAddress() {
+            return address;
         }
 
     }
