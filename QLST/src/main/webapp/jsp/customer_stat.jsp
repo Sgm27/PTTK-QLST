@@ -18,16 +18,13 @@
         <nav class="site-nav" aria-label="Điều hướng chính">
             <a href="${pageContext.request.contextPath}/login">Đăng nhập</a>
             <a href="${pageContext.request.contextPath}/register">Đăng ký thành viên</a>
-            <a href="${pageContext.request.contextPath}/reports" class="is-active">Thống kê khách hàng</a>
+            <a href="${pageContext.request.contextPath}/reports">Thống kê khách hàng</a>
         </nav>
     </div>
 </header>
 <main class="page-content">
-    <section class="card form-card" aria-labelledby="report-title">
-        <div>
-            <h1 id="report-title">Thống kê khách hàng theo doanh thu</h1>
-            <p>Chọn khoảng thời gian để xem danh sách khách hàng và tổng doanh thu tương ứng.</p>
-        </div>
+    <section class="card stack" aria-labelledby="report-title">
+        <h1 id="report-title">Thống kê khách hàng</h1>
 
         <c:if test="${not empty error}">
             <div class="alert" role="alert">${error}</div>
@@ -85,16 +82,11 @@
 
         <c:if test="${not empty selectedCustomerId}">
             <div class="table-card customer-detail" aria-labelledby="customer-detail-heading" aria-live="polite">
-                <div class="section-header">
-                    <div>
-                        <h2 id="customer-detail-heading">Chi tiết giao dịch</h2>
-                        <p>Khách hàng: <strong><c:out value="${selectedCustomerName}" default="Khách hàng #${selectedCustomerId}"/></strong></p>
-                        <p>Khoảng thời gian: <strong>${startDate}</strong> đến <strong>${endDate}</strong></p>
-                    </div>
-                    <div class="stat-chip">
-                        <span>Tổng chi tiêu</span>
-                        <strong>${selectedCustomerTotal}</strong>
-                    </div>
+                <h2 id="customer-detail-heading">Chi tiết giao dịch</h2>
+                <div class="detail-meta">
+                    <span>Khách hàng: <strong><c:out value="${selectedCustomerName}" default="Khách hàng #${selectedCustomerId}"/></strong></span>
+                    <span>Khoảng thời gian: <strong>${startDate}</strong> - <strong>${endDate}</strong></span>
+                    <span>Tổng chi tiêu: <strong>${selectedCustomerTotal}</strong></span>
                 </div>
                 <c:choose>
                     <c:when test="${not empty selectedCustomerTransactions}">
@@ -122,7 +114,7 @@
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <p>Không có giao dịch nào trong khoảng thời gian đã chọn.</p>
+                        <p class="form-note">Không có giao dịch trong khoảng thời gian đã chọn.</p>
                     </c:otherwise>
                 </c:choose>
             </div>
@@ -130,7 +122,7 @@
     </section>
 </main>
 <footer class="site-footer">
-    <small>&copy; 2024 QLST &mdash; Theo dõi doanh thu khách hàng hiệu quả</small>
+    <small>&copy; 2024 QLST</small>
 </footer>
 <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
 </body>

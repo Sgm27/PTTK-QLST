@@ -17,21 +17,18 @@
         </a>
         <nav class="site-nav" aria-label="Điều hướng chính">
             <a href="${pageContext.request.contextPath}/login">Đăng nhập</a>
-            <a href="${pageContext.request.contextPath}/register" class="is-active">Đăng ký thành viên</a>
+            <a href="${pageContext.request.contextPath}/register">Đăng ký thành viên</a>
             <a href="${pageContext.request.contextPath}/reports">Thống kê khách hàng</a>
         </nav>
     </div>
 </header>
 <main class="page-content">
-    <section class="card form-card" aria-labelledby="register-title">
-        <div>
-            <h1 id="register-title">Đăng ký tài khoản khách hàng</h1>
-            <p>Vui lòng cung cấp thông tin chính xác để hệ thống ghi nhận thành viên mới.</p>
-        </div>
+    <section class="card stack" aria-labelledby="register-title">
+        <h1 id="register-title">Đăng ký thành viên</h1>
 
         <c:if test="${not empty errors}">
             <div class="alert" role="alert">
-                <p>Vui lòng kiểm tra lại:</p>
+                <p class="form-note">Vui lòng kiểm tra lại thông tin:</p>
                 <ul>
                     <c:forEach var="error" items="${errors}">
                         <li>${error}</li>
@@ -77,7 +74,7 @@
     </section>
 </main>
 <footer class="site-footer">
-    <small>&copy; 2024 QLST &mdash; Kết nối khách hàng trung thành</small>
+    <small>&copy; 2024 QLST</small>
 </footer>
 <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
 </body>
