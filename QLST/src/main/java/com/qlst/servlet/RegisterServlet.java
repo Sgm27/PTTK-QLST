@@ -39,6 +39,10 @@ public class RegisterServlet extends HttpServlet {
         String address = StringUtils.trimToEmpty(req.getParameter("address"));
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
+        String roleParam = StringUtils.upperCase(StringUtils.trimToEmpty(req.getParameter("role")));
+        String role = "MANAGER".equals(roleParam) ? "MANAGER" : "CUSTOMER";
+
+        req.setAttribute("selectedRole", role);
 
         List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(username)) {
@@ -70,7 +74,7 @@ public class RegisterServlet extends HttpServlet {
 
         if (!errors.isEmpty()) {
             req.setAttribute("errors", errors);
-            req.setAttribute("formData", new FormData(username, fullName, email, phone, address));
+            req.setAttribute("formData", new FormData(username, fullName, email, phone, address, role));
             req.getRequestDispatcher("/jsp/register.jsp").forward(req, resp);
             return;
         }
@@ -80,7 +84,7 @@ public class RegisterServlet extends HttpServlet {
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPhoneNumber(phone);
-        user.setRole("CUSTOMER");
+        user.setRole(role);
         user.setPasswordHash(PasswordUtil.hashPassword(password));
         user.setCreatedAt(LocalDateTime.now());
 
@@ -106,13 +110,15 @@ public class RegisterServlet extends HttpServlet {
         private final String email;
         private final String phone;
         private final String address;
+        private final String role;
 
-        private FormData(String username, String fullName, String email, String phone, String address) {
+        private FormData(String username, String fullName, String email, String phone, String address, String role) {
             this.username = username;
             this.fullName = fullName;
             this.email = email;
             this.phone = phone;
             this.address = address;
+            this.role = role;
         }
 
         public String getUsername() {
@@ -133,6 +139,10 @@ public class RegisterServlet extends HttpServlet {
 
         public String getAddress() {
             return address;
+        }
+
+        public String getRole() {
+            return role;
         }
 
     }

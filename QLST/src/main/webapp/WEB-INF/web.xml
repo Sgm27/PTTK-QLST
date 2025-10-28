@@ -25,12 +25,21 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>StatisticsServlet</servlet-name>
-        <servlet-class>com.qlst.servlet.StatisticsServlet</servlet-class>
+        <servlet-name>CustomerStatisticsServlet</servlet-name>
+        <servlet-class>com.qlst.servlet.CustomerStatisticsServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>StatisticsServlet</servlet-name>
-        <url-pattern>/reports</url-pattern>
+        <servlet-name>CustomerStatisticsServlet</servlet-name>
+        <url-pattern>/statistics/customers</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TransactionDetailsServlet</servlet-name>
+        <servlet-class>com.qlst.servlet.TransactionDetailsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransactionDetailsServlet</servlet-name>
+        <url-pattern>/statistics/transactions</url-pattern>
     </servlet-mapping>
 
     <filter>
@@ -39,7 +48,7 @@
     </filter>
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
-        <url-pattern>/reports</url-pattern>
+        <url-pattern>/statistics/*</url-pattern>
     </filter-mapping>
 
     <welcome-file-list>
