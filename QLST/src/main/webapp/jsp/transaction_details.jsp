@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,7 +13,12 @@
 <body class="app-shell">
 <c:set var="currentPage" value="statistics"/>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="currentUser" value="${sessionScope.currentUser}"/>
 <fmt:setLocale value="vi_VN"/>
+<c:if test="${not empty currentUser}">
+    <c:set var="displayName" value="${not empty currentUser.fullName ? currentUser.fullName : currentUser.username}"/>
+    <c:set var="displayInitial" value="${fn:toUpperCase(fn:substring(displayName, 0, 1))}"/>
+</c:if>
 <header class="app-header">
     <div class="app-bar">
         <a class="brand" href="${ctx}/" aria-label="Trang chủ QLST">
@@ -22,12 +28,31 @@
                 <span class="brand__subtitle">Retail Suite</span>
             </span>
         </a>
-        <nav class="app-nav" aria-label="Điều hướng chính">
-            <a class="app-nav__link${currentPage eq 'home' ? ' is-active' : ''}" href="${ctx}/">Trang chủ</a>
-            <a class="app-nav__link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
-            <a class="app-nav__link${currentPage eq 'register' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
-            <a class="app-nav__link${currentPage eq 'statistics' ? ' is-active' : ''}" href="${ctx}/statistics/customers" data-active-root="${ctx}/statistics">Thống kê</a>
-        </nav>
+        <div class="app-bar__nav-group">
+            <nav class="app-nav" aria-label="Điều hướng chính">
+                <a class="app-nav__link${currentPage eq 'home' ? ' is-active' : ''}" href="${ctx}/">Trang chủ</a>
+                <a class="app-nav__link${currentPage eq 'statistics' ? ' is-active' : ''}" href="${ctx}/statistics/customers" data-active-root="${ctx}/statistics">Thống kê</a>
+            </nav>
+            <c:choose>
+                <c:when test="${not empty currentUser}">
+                    <div class="app-nav app-nav--auth" aria-label="Tài khoản">
+                        <span class="app-nav__user">
+                            <span class="app-nav__user-badge" aria-hidden="true">${displayInitial}</span>
+                            <span>Xin chào, <c:out value="${displayName}"/></span>
+                        </span>
+                        <form class="app-nav__logout" action="${ctx}/logout" method="post">
+                            <button type="submit" class="button button--ghost button--small">Đăng xuất</button>
+                        </form>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <nav class="app-nav app-nav--auth" aria-label="Tài khoản">
+                        <a class="app-nav__link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
+                        <a class="app-nav__link${currentPage eq 'register' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
+                    </nav>
+                </c:otherwise>
+            </c:choose>
+        </div>
     </div>
 </header>
 <main>
