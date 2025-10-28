@@ -29,6 +29,7 @@
 
 body {
     margin: 0;
+    padding: 0;
     min-height: 100vh;
     font-family: var(--font-base);
     background: radial-gradient(circle at top left, rgba(219, 234, 254, 0.65), transparent 55%),
@@ -65,7 +66,7 @@ main {
 .container {
     width: min(100%, var(--container));
     margin: 0 auto;
-    padding: var(--space-5) var(--space-3);
+    padding: var(--space-5) var(--space-4);
 }
 
 .app-header {
@@ -81,8 +82,8 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-3);
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
     margin: 0 auto;
     width: min(100%, var(--container));
 }
@@ -158,14 +159,17 @@ main {
 
 .page-hero {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-6);
     align-items: center;
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-5);
 }
 
 .page-hero__content {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
     align-content: start;
+    max-width: 100%;
 }
 
 .page-hero__eyebrow {
@@ -193,8 +197,9 @@ main {
 
 .hero-actions {
     display: inline-flex;
-    gap: var(--space-2);
+    gap: var(--space-3);
     flex-wrap: wrap;
+    margin-top: var(--space-2);
 }
 
 .hero-actions .button {
@@ -210,6 +215,7 @@ main {
     display: grid;
     gap: var(--space-4);
     box-shadow: var(--shadow-elevated);
+    max-width: 100%;
 }
 
 .surface-card--soft {
@@ -232,29 +238,30 @@ main {
 
 .quick-actions-section {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5);
     margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
 }
 
 .quick-actions-section__intro {
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
     justify-items: start;
 }
 
 .quick-actions {
     display: grid;
-    gap: var(--space-3);
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .action-card {
-    padding: var(--space-4);
+    padding: var(--space-5);
     border-radius: var(--radius-lg);
     border: 1px solid rgba(226, 232, 240, 0.9);
     background: var(--color-surface);
     display: grid;
-    gap: var(--space-2);
+    gap: var(--space-3);
     align-content: start;
     transition: transform 160ms ease, box-shadow 160ms ease;
 }
@@ -280,7 +287,7 @@ main {
 
 .action-card__body {
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
 }
 
 .action-card__title {
@@ -297,12 +304,12 @@ main {
 
 .form-shell {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--space-5);
 }
 
 .form-grid {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
 }
 
 .form-grid--two {
@@ -311,7 +318,7 @@ main {
 
 .form-field {
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
 }
 
 label {
@@ -348,8 +355,9 @@ textarea:focus {
 .form-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
+    gap: var(--space-3);
     justify-content: flex-end;
+    margin-top: var(--space-2);
 }
 
 .button {
@@ -391,12 +399,13 @@ textarea:focus {
 }
 
 .alert {
-    padding: var(--space-3);
+    padding: var(--space-4);
     border-radius: var(--radius-md);
     border: 1px solid rgba(37, 99, 235, 0.4);
     background: rgba(37, 99, 235, 0.12);
     color: var(--color-primary-strong);
     font-size: 0.95rem;
+    margin: var(--space-2) 0;
 }
 
 .alert ul {
@@ -408,17 +417,17 @@ textarea:focus {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
 }
 
 .stat-tile {
-    padding: var(--space-3);
+    padding: var(--space-4);
     border-radius: var(--radius-md);
     background: rgba(37, 99, 235, 0.08);
     border: 1px solid rgba(37, 99, 235, 0.2);
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
 }
 
 .stat-tile__label {
@@ -439,12 +448,13 @@ textarea:focus {
     overflow: hidden;
     background: var(--color-surface);
     box-shadow: var(--shadow-soft);
+    margin-top: var(--space-5);
 }
 
 .table-card__header {
-    padding: var(--space-3);
+    padding: var(--space-4) var(--space-4);
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-2);
 }
 
 .table-wrapper {
@@ -459,7 +469,7 @@ table {
 
 thead th {
     background: var(--color-surface-muted);
-    padding: 0.85rem 1rem;
+    padding: 1rem 1.25rem;
     text-align: left;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -468,7 +478,7 @@ thead th {
 }
 
 tbody td {
-    padding: 0.85rem 1rem;
+    padding: 1rem 1.25rem;
     border-top: 1px solid var(--color-border);
 }
 
@@ -516,10 +526,12 @@ tbody tr:hover {
 }
 
 .app-footer {
-    padding: var(--space-6) var(--space-3);
+    padding: var(--space-6) var(--space-4);
     text-align: center;
     color: var(--color-text-muted);
     font-size: 0.9rem;
+    margin-top: var(--space-6);
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
 }
 
 .app-footer__links {
@@ -532,27 +544,35 @@ tbody tr:hover {
 
 @media (max-width: 992px) {
     .container {
-        padding: var(--space-5) var(--space-2);
+        padding: var(--space-4) var(--space-3);
     }
 
     .app-bar {
-        padding: var(--space-3) var(--space-2);
+        padding: var(--space-3) var(--space-3);
     }
 
     table {
         min-width: 520px;
     }
+    
+    .quick-actions {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
 }
 
 @media (max-width: 640px) {
+    .container {
+        padding: var(--space-4) var(--space-2);
+    }
+    
     .page-hero__content,
     .quick-actions-section__intro {
-        justify-items: center;
-        text-align: center;
+        justify-items: start;
+        text-align: left;
     }
 
     .page-hero {
-        text-align: center;
+        text-align: left;
     }
 
     .brand__text {
@@ -575,6 +595,15 @@ tbody tr:hover {
     .app-bar {
         flex-direction: column;
         align-items: stretch;
+        padding: var(--space-2) var(--space-2);
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-card {
+        padding: var(--space-4);
     }
 }
 
@@ -582,4 +611,41 @@ tbody tr:hover {
     .page-hero {
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
     }
+}
+
+/* Additional spacing utilities */
+section + section {
+    margin-top: var(--space-6);
+}
+
+.page-hero > * + * {
+    margin-top: var(--space-5);
+}
+
+/* Improve form layout */
+.form-grid--two {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Better button sizing */
+.button {
+    min-width: 140px;
+}
+
+/* Improved meta list spacing */
+.meta-list {
+    display: grid;
+    gap: var(--space-3);
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+}
+
+/* Better empty state */
+.empty-state {
+    padding: var(--space-6) var(--space-5);
+    border-radius: var(--radius-lg);
+    border: 1px dashed rgba(37, 99, 235, 0.3);
+    background: rgba(219, 234, 254, 0.45);
+    text-align: center;
+    color: var(--color-text-muted);
 }
