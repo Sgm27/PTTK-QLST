@@ -44,7 +44,7 @@
 
 <main>
     <div class="page">
-        <div class="page-header">
+        <div class="page-header page-header--full">
             <h1 class="page-header__title">Báo cáo doanh thu theo khách hàng</h1>
             <p class="page-header__subtitle">Chọn khoảng thời gian để xem tổng doanh thu, số giao dịch và đi tới chi tiết của từng khách hàng.</p>
         </div>
@@ -80,7 +80,7 @@
                                         <path d="M3 10H21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
                                     </svg>
                                 </span>
-                                <input type="date" id="startDate" name="startDate" value="${startDate}" required>
+                                <input type="date" id="startDate" name="startDate" value="${startDate}" lang="vi" placeholder="dd/mm/yyyy" required>
                             </div>
                         </div>
                         <div class="date-field">
@@ -94,7 +94,7 @@
                                         <path d="M3 10H21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
                                     </svg>
                                 </span>
-                                <input type="date" id="endDate" name="endDate" value="${endDate}" required>
+                                <input type="date" id="endDate" name="endDate" value="${endDate}" lang="vi" placeholder="dd/mm/yyyy" required>
                             </div>
                         </div>
                     </div>
