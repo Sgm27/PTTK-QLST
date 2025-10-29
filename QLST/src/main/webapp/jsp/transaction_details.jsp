@@ -45,9 +45,17 @@
 <main>
     <div class="page">
         <div class="page-header">
-            <p class="page-header__eyebrow">QLST Insight</p>
-            <h1 class="page-header__title">Chi tiết giao dịch khách hàng</h1>
-            <p class="page-header__subtitle">Theo dõi lịch sử giao dịch và thông tin liên hệ của khách hàng trong khoảng thời gian đã chọn.</p>
+            <h1 class="page-header__title">
+                <c:choose>
+                    <c:when test="${not empty customer and not empty customer.fullName}">
+                        Giao dịch của <c:out value="${customer.fullName}"/>
+                    </c:when>
+                    <c:otherwise>
+                        Chi tiết giao dịch khách hàng
+                    </c:otherwise>
+                </c:choose>
+            </h1>
+            <p class="page-header__subtitle">Theo dõi lịch sử giao dịch, thông tin liên hệ và tổng giá trị trong khoảng thời gian đã chọn.</p>
         </div>
 
         <c:url var="backToStatisticsUrl" value="/statistics/customers">

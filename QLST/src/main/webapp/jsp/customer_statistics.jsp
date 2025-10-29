@@ -45,9 +45,8 @@
 <main>
     <div class="page">
         <div class="page-header">
-            <p class="page-header__eyebrow">QLST Insight</p>
-            <h1 class="page-header__title">Thống kê doanh thu khách hàng</h1>
-            <p class="page-header__subtitle">Lọc dữ liệu theo khoảng thời gian để xem tổng doanh thu và số giao dịch của từng khách hàng.</p>
+            <h1 class="page-header__title">Báo cáo doanh thu theo khách hàng</h1>
+            <p class="page-header__subtitle">Chọn khoảng thời gian để xem tổng doanh thu, số giao dịch và đi tới chi tiết của từng khách hàng.</p>
         </div>
 
         <c:if test="${not empty startDate}">
