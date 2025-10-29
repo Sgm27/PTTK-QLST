@@ -129,6 +129,14 @@ main {
     gap: 28px;
 }
 
+.page--centered .page-header {
+    align-items: center;
+    text-align: center;
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+}
+
 .page-header {
     display: flex;
     flex-direction: column;
@@ -162,6 +170,11 @@ main {
         align-items: flex-start;
         text-align: left;
         gap: 14px;
+    }
+
+    .page--centered .page-header {
+        align-items: center;
+        text-align: center;
     }
 
     .page-header__subtitle {
