@@ -181,17 +181,6 @@ main {
     text-transform: uppercase;
 }
 
-.app-nav__logout {
-    margin: 0;
-    display: inline-flex;
-}
-
-.app-nav__logout button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
 .app-nav__link {
     padding: 0.6rem 1rem;
     border-radius: var(--radius-md);
