@@ -145,6 +145,16 @@ main {
     align-items: center;
 }
 
+.page-header--full {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.page-header--full .page-header__subtitle {
+    max-width: none;
+}
+
 .page-header__eyebrow {
     font-size: 0.9rem;
     color: var(--blue-600);
@@ -175,6 +185,15 @@ main {
     .page--centered .page-header {
         align-items: center;
         text-align: center;
+    }
+
+    .page-header--full {
+        align-items: center;
+        text-align: center;
+    }
+
+    .page-header--full .page-header__subtitle {
+        max-width: none;
     }
 
     .page-header__subtitle {
