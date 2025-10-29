@@ -126,14 +126,5 @@
     </div>
 </main>
 
-<footer class="site-footer">
-    <div class="site-footer__inner">
-        <small>&copy; 2024 QLST. Đăng ký nhanh chóng, bảo mật.</small>
-        <div class="site-footer__links">
-            <a href="${ctx}/login">Đăng nhập</a>
-            <a href="${ctx}/statistics/customers">Thống kê</a>
-        </div>
-    </div>
-</footer>
 </body>
 </html>

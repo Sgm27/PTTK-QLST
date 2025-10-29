@@ -187,14 +187,5 @@
     </div>
 </main>
 
-<footer class="site-footer">
-    <div class="site-footer__inner">
-        <small>&copy; 2024 QLST. Chi tiết giao dịch rõ ràng, dễ theo dõi.</small>
-        <div class="site-footer__links">
-            <a href="${ctx}/statistics/customers">Thống kê</a>
-            <a href="${ctx}/login">Đăng nhập</a>
-        </div>
-    </div>
-</footer>
 </body>
 </html>
