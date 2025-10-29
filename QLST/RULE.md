@@ -7,36 +7,11 @@ Hướng dẫn cho AI coding assistant xây dựng hệ thống Quản lý Sàn 
 
 ## 🎨 THIẾT KẾ GIAO DIỆN
 
-### 1. Màu sắc - CHỈ 2 MÀU CHÍNH
-**Xanh dương nhạt (Primary):**
-- Chính: `#2563eb`
-- Hover: `#3b82f6`
-- Active: `#1e40af`
-- Background nhạt: `#dbeafe`
-- Background cực nhạt: `#eff6ff`
-
-**Trắng (Background):**
-- Trắng thuần: `#ffffff`
-- Trắng xám: `#f8fafc`
-- Alternate rows: `#f1f5f9`
-
-**Màu bổ trợ (tối thiểu):**
-- Text chính: `#1e293b`
-- Text phụ: `#64748b`
-- Border: `#e2e8f0`
-- Shadow: `rgba(37, 99, 235, 0.08)`
-
-### 2. Typography & Spacing
-- Font: `Inter, Segoe UI, sans-serif`
-- Sizes: 12px → 14px → 16px → 18px → 20px → 24px → 30px
-- Spacing: 4px, 8px, 16px, 24px, 32px, 48px
-- Border radius: 6px (nhỏ), 8px (medium), 12px (lớn)
-
-### 3. Layout
-- Container tối đa: **1200px**
-- Responsive breakpoints: 640px, 768px, 1024px, 1280px
-- Grid/Flexbox cho bố cục
-- Khoảng cách nhất quán
+- **Nền trắng tối giản:** toàn bộ nền trang sử dụng `#ffffff`, hạn chế gradient hoặc hiệu ứng phức tạp.
+- **Nút xanh dương nhạt:** tất cả button có nền xanh dương nhạt (`#60a5fa`), chữ đậm dễ đọc và LUÔN có viền xanh (`#3b82f6`).
+- **Thành phần có viền:** thẻ, form, bảng... đều có viền mảnh `#cbd5f5`, bo góc 10-12px, shadow nhẹ hoặc không dùng cũng được.
+- **Font & khoảng cách:** tiếp tục dùng `Inter, Segoe UI, sans-serif`, giữ spacing 8px/16px/24px để bố cục thông thoáng.
+- **Màu chữ:** chữ chính `#1f2937`, chữ phụ `#64748b`, liên kết và trạng thái nhấn dùng xanh dương nhạt cùng tông với nút.
 
 ---
 
