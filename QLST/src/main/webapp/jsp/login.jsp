@@ -41,9 +41,8 @@
 </header>
 
 <main>
-    <div class="page">
+    <div class="page page--centered">
         <div class="page-header">
-            <p class="page-header__eyebrow">QLST Access</p>
             <h1 class="page-header__title">Đăng nhập tài khoản</h1>
             <p class="page-header__subtitle">Nhập thông tin để truy cập bảng điều khiển và báo cáo khách hàng.</p>
         </div>
