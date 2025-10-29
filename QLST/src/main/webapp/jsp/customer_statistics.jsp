@@ -30,6 +30,7 @@
                 <c:when test="${not empty currentUser}">
                     <span class="nav-pill">Xin chào, <c:out value="${displayName}"/></span>
                     <a class="nav-link is-active" href="${ctx}/statistics/customers">Thống kê</a>
+                    <a class="nav-link nav-link--logout" href="${ctx}/logout">Đăng xuất</a>
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
@@ -49,27 +50,56 @@
             <p class="page-header__subtitle">Lọc dữ liệu theo khoảng thời gian để xem tổng doanh thu và số giao dịch của từng khách hàng.</p>
         </div>
 
-        <div class="card-grid card-grid--split">
-            <section class="card card--narrow" aria-labelledby="filter-heading">
+        <c:if test="${not empty startDate}">
+            <fmt:parseDate value="${startDate}" pattern="yyyy-MM-dd" var="startDateObj"/>
+        </c:if>
+        <c:if test="${not empty endDate}">
+            <fmt:parseDate value="${endDate}" pattern="yyyy-MM-dd" var="endDateObj"/>
+        </c:if>
+
+        <div class="card-stack">
+            <section class="card card--filters" aria-labelledby="filter-heading">
                 <div>
                     <h2 class="card__title" id="filter-heading">Khoảng thời gian</h2>
-                    <p class="card__subtitle">Chọn ngày bắt đầu và kết thúc trước khi xem báo cáo.</p>
+                    <p class="card__subtitle">Chọn ngày bắt đầu và ngày kết thúc, sau đó nhấn "Xem báo cáo".</p>
                 </div>
 
                 <c:if test="${not empty error}">
                     <div class="alert" role="alert">${error}</div>
                 </c:if>
 
-                <form action="${ctx}/statistics/customers" method="post" class="form-grid">
-                    <div class="form-group">
-                        <label for="startDate">Ngày bắt đầu</label>
-                        <input type="date" id="startDate" name="startDate" value="${startDate}" required>
+                <form action="${ctx}/statistics/customers" method="post" class="date-form">
+                    <div class="date-range">
+                        <div class="date-field">
+                            <label for="startDate">Từ ngày</label>
+                            <div class="input-with-icon">
+                                <span class="input-with-icon__icon" aria-hidden="true">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/>
+                                        <path d="M8 3V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                        <path d="M16 3V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                        <path d="M3 10H21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+                                <input type="date" id="startDate" name="startDate" value="${startDate}" required>
+                            </div>
+                        </div>
+                        <div class="date-field">
+                            <label for="endDate">Đến ngày</label>
+                            <div class="input-with-icon">
+                                <span class="input-with-icon__icon" aria-hidden="true">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.4"/>
+                                        <path d="M8 3V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                        <path d="M16 3V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                        <path d="M3 10H21" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                                    </svg>
+                                </span>
+                                <input type="date" id="endDate" name="endDate" value="${endDate}" required>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="endDate">Ngày kết thúc</label>
-                        <input type="date" id="endDate" name="endDate" value="${endDate}" required>
-                    </div>
-                    <div class="button-row">
+                    <div class="button-row button-row--align-start">
                         <button type="submit" class="btn btn--primary">Xem báo cáo</button>
                     </div>
                 </form>
@@ -81,7 +111,24 @@
                     <section class="card" aria-labelledby="report-heading">
                         <div>
                             <h2 class="card__title" id="report-heading">Kết quả thống kê</h2>
-                            <p class="card__subtitle">Có ${totalCustomers} khách hàng phù hợp trong khoảng ${startDate} → ${endDate}.</p>
+                            <div class="summary-banner" role="status">
+                                <div class="summary-banner__item">
+                                    <span class="summary-banner__label">Khoảng thời gian</span>
+                                    <strong>
+                                        <c:choose>
+                                            <c:when test="${not empty startDateObj and not empty endDateObj}">
+                                                <fmt:formatDate value="${startDateObj}" pattern="dd/MM/yyyy"/> →
+                                                <fmt:formatDate value="${endDateObj}" pattern="dd/MM/yyyy"/>
+                                            </c:when>
+                                            <c:otherwise>${startDate} → ${endDate}</c:otherwise>
+                                        </c:choose>
+                                    </strong>
+                                </div>
+                                <div class="summary-banner__item">
+                                    <span class="summary-banner__label">Số khách hàng</span>
+                                    <strong>${totalCustomers}</strong>
+                                </div>
+                            </div>
                         </div>
                         <div class="table-wrapper">
                             <table aria-describedby="report-heading">

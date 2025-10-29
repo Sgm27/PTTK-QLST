@@ -30,6 +30,7 @@
                 <c:when test="${not empty currentUser}">
                     <span class="nav-pill">Xin chào, <c:out value="${displayName}"/></span>
                     <a class="nav-link is-active" href="${ctx}/statistics/customers">Thống kê</a>
+                    <a class="nav-link nav-link--logout" href="${ctx}/logout">Đăng xuất</a>
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>

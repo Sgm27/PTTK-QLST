@@ -42,6 +42,15 @@
         <url-pattern>/statistics/transactions</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.qlst.servlet.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>AuthenticationFilter</filter-name>
         <filter-class>com.qlst.servlet.filter.AuthenticationFilter</filter-class>
