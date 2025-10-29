@@ -38,9 +38,6 @@
                             <span class="app-nav__user-badge" aria-hidden="true">${displayInitial}</span>
                             <span>Xin chào, <c:out value="${displayName}"/></span>
                         </span>
-                        <form class="app-nav__logout" action="${ctx}/logout" method="post">
-                            <button type="submit" class="button button--ghost button--small">Đăng xuất</button>
-                        </form>
                     </div>
                 </c:when>
                 <c:otherwise>

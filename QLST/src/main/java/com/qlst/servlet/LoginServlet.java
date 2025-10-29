@@ -32,12 +32,6 @@ public class LoginServlet extends HttpServlet {
         if ("true".equals(req.getParameter("registered"))) {
             req.setAttribute("message", "Đăng ký thành công. Vui lòng đăng nhập.");
         }
-        if ("true".equals(req.getParameter("logout"))) {
-            if (session != null) {
-                session.invalidate();
-            }
-            req.setAttribute("message", "Bạn đã đăng xuất.");
-        }
         req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
     }
 

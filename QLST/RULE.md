@@ -92,9 +92,6 @@ Hướng dẫn cho AI coding assistant xây dựng hệ thống Quản lý Sàn 
 - GET params: customerId, startDate, endDate
 - setAttribute: customer, transactions, totalAmount
 
-**e) LogoutServlet** - `/logout`
-- Invalidate session, redirect
-
 ### 3. DAO - `src/main/java/com/qlst/dao/`
 
 **a) UserDAO**
