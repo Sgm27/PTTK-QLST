@@ -10,154 +10,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
-<body class="app-shell">
+<body>
 <c:set var="currentPage" value="statistics"/>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="currentUser" value="${sessionScope.currentUser}"/>
 <fmt:setLocale value="vi_VN"/>
 <c:if test="${not empty currentUser}">
     <c:set var="displayName" value="${not empty currentUser.fullName ? currentUser.fullName : currentUser.username}"/>
-    <c:set var="displayInitial" value="${fn:toUpperCase(fn:substring(displayName, 0, 1))}"/>
 </c:if>
-<header class="app-header">
-    <div class="app-bar">
-        <a class="brand" href="${ctx}/" aria-label="Trang chủ QLST">
-            <span class="brand__mark">QL</span>
-            <span class="brand__text">
-                <span class="brand__title">QLST</span>
-                <span class="brand__subtitle">Retail Suite</span>
-            </span>
+
+<header class="top-bar">
+    <div class="top-bar__inner">
+        <a class="brand" href="${ctx}/login">
+            <span class="brand__badge">QL</span>
+            <span>QLST</span>
         </a>
-        <div class="app-bar__nav-group">
-            <nav class="app-nav" aria-label="Điều hướng chính">
-                <a class="app-nav__link${currentPage eq 'home' ? ' is-active' : ''}" href="${ctx}/">Trang chủ</a>
-                <a class="app-nav__link${currentPage eq 'statistics' ? ' is-active' : ''}" href="${ctx}/statistics/customers" data-active-root="${ctx}/statistics">Thống kê</a>
-            </nav>
+        <div class="top-bar__links">
             <c:choose>
                 <c:when test="${not empty currentUser}">
-                    <div class="app-nav app-nav--auth" aria-label="Tài khoản">
-                        <span class="app-nav__user">
-                            <span class="app-nav__user-badge" aria-hidden="true">${displayInitial}</span>
-                            <span>Xin chào, <c:out value="${displayName}"/></span>
-                        </span>
-                    </div>
+                    <span class="nav-pill">Xin chào, <c:out value="${displayName}"/></span>
+                    <a class="nav-link is-active" href="${ctx}/statistics/customers">Thống kê</a>
                 </c:when>
                 <c:otherwise>
-                    <nav class="app-nav app-nav--auth" aria-label="Tài khoản">
-                        <a class="app-nav__link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
-                        <a class="app-nav__link${currentPage eq 'register' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
-                    </nav>
+                    <a class="nav-link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
+                    <a class="nav-link${currentPage eq 'register' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
+                    <a class="nav-link is-active" href="${ctx}/statistics/customers">Thống kê</a>
                 </c:otherwise>
             </c:choose>
         </div>
     </div>
 </header>
+
 <main>
-    <section class="container analytics-layout">
-        <div class="analytics-header">
-            <div class="analytics-header__text">
-                <p class="analytics-header__eyebrow">QLST Insight</p>
-                <h1 class="analytics-header__title">Thống kê doanh thu theo khách hàng</h1>
-                <p class="analytics-header__description">
-                    Lọc dữ liệu theo khoảng thời gian để theo dõi doanh thu và truy cập nhanh tới chi tiết giao dịch của từng khách hàng.
-                </p>
-            </div>
+    <div class="page">
+        <div class="page-header">
+            <p class="page-header__eyebrow">QLST Insight</p>
+            <h1 class="page-header__title">Thống kê doanh thu khách hàng</h1>
+            <p class="page-header__subtitle">Lọc dữ liệu theo khoảng thời gian để xem tổng doanh thu và số giao dịch của từng khách hàng.</p>
         </div>
 
-        <div class="analytics-grid analytics-grid--stacked">
-            <div class="surface-card surface-card--tight analytics-grid__side" aria-labelledby="filter-heading">
-                <div class="analytics-card__header">
-                    <h2 class="section-title" id="filter-heading">Bộ lọc thời gian</h2>
-                    <p class="section-subtitle">Chọn khoảng ngày để hệ thống tổng hợp doanh thu tương ứng.</p>
+        <div class="card-grid card-grid--split">
+            <section class="card card--narrow" aria-labelledby="filter-heading">
+                <div>
+                    <h2 class="card__title" id="filter-heading">Khoảng thời gian</h2>
+                    <p class="card__subtitle">Chọn ngày bắt đầu và kết thúc trước khi xem báo cáo.</p>
                 </div>
 
                 <c:if test="${not empty error}">
                     <div class="alert" role="alert">${error}</div>
                 </c:if>
 
-                <form action="${ctx}/statistics/customers" method="post" class="form-grid form-grid--two">
-                    <div class="form-field">
+                <form action="${ctx}/statistics/customers" method="post" class="form-grid">
+                    <div class="form-group">
                         <label for="startDate">Ngày bắt đầu</label>
                         <input type="date" id="startDate" name="startDate" value="${startDate}" required>
                     </div>
-                    <div class="form-field">
+                    <div class="form-group">
                         <label for="endDate">Ngày kết thúc</label>
                         <input type="date" id="endDate" name="endDate" value="${endDate}" required>
                     </div>
-                    <div class="form-actions">
-                        <button type="submit" class="button button--primary">Xem báo cáo</button>
+                    <div class="button-row">
+                        <button type="submit" class="btn btn--primary">Xem báo cáo</button>
                     </div>
                 </form>
-            </div>
+            </section>
 
             <c:choose>
                 <c:when test="${not empty customerRevenue}">
                     <c:set var="totalCustomers" value="${fn:length(customerRevenue)}"/>
-                    <div class="data-panel analytics-grid__main" aria-labelledby="report-heading">
-                        <div class="data-panel__header">
-                            <h2 class="section-title" id="report-heading">Bảng xếp hạng khách hàng</h2>
-                            <p class="section-subtitle">
-                                Có ${totalCustomers} khách hàng phù hợp trong khoảng thời gian ${startDate} → ${endDate}. Chọn nút
-                                <strong>Mở trang chi tiết</strong> để chuyển sang màn hình giao dịch riêng cho từng người.
-                            </p>
+                    <section class="card" aria-labelledby="report-heading">
+                        <div>
+                            <h2 class="card__title" id="report-heading">Kết quả thống kê</h2>
+                            <p class="card__subtitle">Có ${totalCustomers} khách hàng phù hợp trong khoảng ${startDate} → ${endDate}.</p>
                         </div>
-                        <div class="data-panel__body">
-                            <div class="table-wrapper">
-                                <table aria-describedby="report-heading">
-                                    <thead>
+                        <div class="table-wrapper">
+                            <table aria-describedby="report-heading">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Mã KH</th>
+                                    <th scope="col">Họ tên</th>
+                                    <th scope="col">Tổng doanh thu</th>
+                                    <th scope="col">Số giao dịch</th>
+                                    <th scope="col" class="table-actions">Chi tiết</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="item" items="${customerRevenue}">
                                     <tr>
-                                        <th scope="col">Mã KH</th>
-                                        <th scope="col">Họ tên</th>
-                                        <th scope="col">Tổng doanh thu</th>
-                                        <th scope="col">Số giao dịch</th>
-                                        <th scope="col" class="table-actions">Chi tiết</th>
+                                        <td>${item.customerId}</td>
+                                        <td><c:out value="${item.customerName}"/></td>
+                                        <td><fmt:formatNumber value="${item.revenue}" type="currency"/></td>
+                                        <td>${item.transactionCount}</td>
+                                        <td class="table-actions">
+                                            <a class="btn btn--ghost" href="${ctx}/statistics/transactions?customerId=${item.customerId}&amp;startDate=${startDate}&amp;endDate=${endDate}">Xem</a>
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="item" items="${customerRevenue}">
-                                        <tr>
-                                            <td>${item.customerId}</td>
-                                            <td><c:out value="${item.customerName}"/></td>
-                                            <td><fmt:formatNumber value="${item.revenue}" type="currency"/></td>
-                                            <td>${item.transactionCount}</td>
-                                            <td class="table-actions">
-                                                <a class="button button--ghost" href="${ctx}/statistics/transactions?customerId=${item.customerId}&amp;startDate=${startDate}&amp;endDate=${endDate}"
-                                                   aria-label="Mở trang chi tiết giao dịch của ${item.customerName}">Mở trang chi tiết</a>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
+                                </c:forEach>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
+                    </section>
                 </c:when>
                 <c:otherwise>
-                    <c:choose>
-                        <c:when test="${not empty startDate and not empty endDate}">
-                            <div class="empty-state analytics-grid__full" role="status">
-                                <p>Không có dữ liệu giao dịch trong khoảng thời gian đã chọn.</p>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="empty-state analytics-grid__full" role="status">
-                                <p>Vui lòng chọn ngày bắt đầu, ngày kết thúc và nhấn "Xem báo cáo" để xem danh sách khách hàng.</p>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                    <section class="card" aria-live="polite">
+                        <h2 class="card__title">Chưa có dữ liệu</h2>
+                        <c:choose>
+                            <c:when test="${not empty startDate and not empty endDate}">
+                                <p class="card__subtitle">Không tìm thấy giao dịch trong khoảng thời gian đã chọn.</p>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="card__subtitle">Chọn ngày bắt đầu và ngày kết thúc để xem bảng thống kê.</p>
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="empty-state">
+                            <p>Hệ thống sẽ hiển thị dữ liệu ngay sau khi bạn chạy báo cáo.</p>
+                        </div>
+                    </section>
                 </c:otherwise>
             </c:choose>
         </div>
-    </section>
+    </div>
 </main>
-<footer class="app-footer">
-    <small>&copy; 2024 QLST. Báo cáo doanh thu chính xác, thời gian thực.</small>
-    <div class="app-footer__links">
-        <a href="${ctx}/">Trang chủ</a>
-        <span aria-hidden="true">•</span>
-        <a href="${ctx}/login">Đăng nhập</a>
+
+<footer class="site-footer">
+    <div class="site-footer__inner">
+        <small>&copy; 2024 QLST. Thống kê rõ ràng, giao diện tối giản.</small>
+        <div class="site-footer__links">
+            <a href="${ctx}/login">Đăng nhập</a>
+            <a href="${ctx}/register">Đăng ký</a>
+        </div>
     </div>
 </footer>
-<script src="${ctx}/assets/js/app.js"></script>
 </body>
 </html>
