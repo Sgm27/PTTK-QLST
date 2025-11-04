@@ -17,7 +17,7 @@ from db_utils import (
 
 REQUIRED_TABLES = ("users", "customers", "transactions")
 DEFAULT_END = date.today()
-DEFAULT_START = DEFAULT_END - timedelta(days=120)
+DEFAULT_START = date(2025, 6, 1)  
 PASSWORD_DEFAULT = "customer123"
 
 FIRST_NAMES = (
