@@ -6,7 +6,6 @@ import com.qlst.model.Member;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -52,7 +51,7 @@ public class MemberDAO extends DAO {
 
     private String insertUser(Member member) throws SQLException {
         LocalDateTime createdAt = LocalDateTime.now();
-        try (PreparedStatement statement = con.prepareStatement(INSERT_USER_SQL, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = con.prepareStatement(INSERT_USER_SQL)) {
             statement.setString(1, member.getName());
             statement.setString(2, member.getPassword());
             statement.setString(3, "CUSTOMER");
@@ -61,14 +60,8 @@ public class MemberDAO extends DAO {
             statement.setString(6, member.getPhone());
             statement.setTimestamp(7, Timestamp.valueOf(createdAt));
             statement.executeUpdate();
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getString(1);
-                }
-            }
         }
-        throw new SQLException("Không thể lấy mã người dùng sau khi tạo thành viên.");
+        return fetchUserIdByUsername(member.getName());
     }
 
     private Customer toCustomer(Member member, String userId) {
@@ -80,5 +73,18 @@ public class MemberDAO extends DAO {
         customer.setUserAccountId(userId);
         customer.setJoinedAt(LocalDateTime.now());
         return customer;
+    }
+
+    private String fetchUserIdByUsername(String username) throws SQLException {
+        String sql = "SELECT id FROM tblUsers WHERE username = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("id");
+                }
+            }
+        }
+        throw new SQLException("Khong the lay ma nguoi dung sau khi tao thanh vien.");
     }
 }

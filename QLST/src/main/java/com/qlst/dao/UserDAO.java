@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -81,7 +80,7 @@ public class UserDAO {
             createdAt = LocalDateTime.now();
             user.setCreatedAt(createdAt);
         }
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, user.getUsername());
             statement.setString(2, user.getPasswordHash());
             statement.setString(3, user.getRole());
@@ -90,20 +89,15 @@ public class UserDAO {
             statement.setString(6, user.getPhoneNumber());
             statement.setTimestamp(7, Timestamp.valueOf(createdAt));
             statement.executeUpdate();
-            try (ResultSet keys = statement.getGeneratedKeys()) {
-                if (keys.next()) {
-                    String id = keys.getString(1); // Changed to getString for VARCHAR ID
-                    user.setId(id);
-                    return id;
-                }
-            }
         }
-        throw new SQLException("Không thể lấy mã người dùng sau khi tạo tài khoản.");
+        String id = resolveUserId(connection, user.getUsername());
+        user.setId(id);
+        return id;
     }
 
     private User mapRow(ResultSet resultSet) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getString("id")); 
+        user.setId(resultSet.getString("id"));
         user.setUsername(resultSet.getString("username"));
         user.setPasswordHash(resultSet.getString("password_hash"));
         user.setRole(resultSet.getString("role"));
@@ -115,5 +109,18 @@ public class UserDAO {
             user.setCreatedAt(createdAt.toLocalDateTime());
         }
         return user;
+    }
+
+    private String resolveUserId(Connection connection, String username) throws SQLException {
+        String sql = "SELECT id FROM tblUsers WHERE username = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("id");
+                }
+            }
+        }
+        throw new SQLException("Khong the lay ma nguoi dung sau khi tao tai khoan.");
     }
 }

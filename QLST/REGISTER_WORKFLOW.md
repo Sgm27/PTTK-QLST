@@ -1,553 +1,191 @@
-# QUY TRÌNH ĐĂNG KÝ THÀNH VIÊN (MEMBER REGISTRATION WORKFLOW)
+# WORKFLOW - DANG KY THANH VIEN
 
-## Tổng quan
-Module "Khách hàng đăng ký thành viên" cho phép người dùng tạo tài khoản mới trong hệ thống QLST. Quy trình này tuân theo kiến trúc MVC với các lớp Servlet, DAO, và Model được tổ chức rõ ràng.
+## Quy trinh thuc hien chuc nang "Dang ky thanh vien"
 
----
+1. Khach hang mo trinh duyet va truy cap ten mien trien khai QLST (vi du `https://qlst.example.com`).
 
-## LUỒNG XỬ LÝ CHI TIẾT
+2. Trang `index.jsp` (`src/main/webapp/index.jsp`) tra ve the `<c:redirect url="/login"/>` de chuyen khach ve URL `/login`.
 
-### **Bước 1: Người dùng truy cập trang đăng ký**
+3. Tep `WEB-INF/web.xml` gan URL pattern `/login` cho lop servlet `com.qlst.servlet.LoginServlet`.
 
-**Hành động của người dùng:**
-- Người dùng truy cập trang web và nhấn vào liên kết "Đăng ký" trên thanh điều hướng
-- URL được gọi: `GET /register`
+4. Container khoi tao `LoginServlet` neu chua co trong bo nho va goi `service()` cho request GET.
 
-**Xử lý:**
-- Request được chuyển đến `RegisterServlet` (đã đăng ký trong `web.xml` với pattern `/register`)
-- Servlet xử lý phương thức `doGet()`
-- Phương thức `doGet()` đơn giản chỉ forward request đến trang JSP
+5. Ham `LoginServlet.doGet()` kiem tra session `currentUser`, roi forward request toi `/jsp/login.jsp` khi khach hang chua dang nhap.
 
-**Kết quả:**
-- Servlet forward request đến JSP: `/jsp/FillInformation.jsp`
+6. Lop `login.jsp` (`src/main/webapp/jsp/login.jsp`) cai dat top bar voi lien ket "Dang ky" tro toi `${ctx}/register`.
 
----
+7. Khach hang click lien ket "Dang ky" tren trang dang nhap de bat dau quy trinh tao tai khoan.
 
-### **Bước 2: Hiển thị giao diện đăng ký (FillInformation.jsp)**
+8. Trinh duyet gui request GET toi `${contextPath}/register`.
 
-**Mô tả:**
-JSP `FillInformation.jsp` được render để hiển thị form đăng ký với các trường thông tin cần thiết.
+9. Tep `WEB-INF/web.xml` anh xa URL `/register` toi lop `com.qlst.servlet.RegisterServlet`.
 
-**Cấu trúc form:**
-- **Table ID:** `tblInputInformation`
-- **Các trường dữ liệu:**
-  1. **Họ và tên** (`name`) - Bắt buộc
-  2. **Mật khẩu** (`password`) - Bắt buộc, tối thiểu 8 ký tự
-  3. **Email** (`email`) - Bắt buộc
-  4. **Địa chỉ** (`address`) - Tùy chọn
-  5. **Số điện thoại** (`phone`) - Tùy chọn
+10. Container khoi tao `RegisterServlet` (neu chua) va goi `service()` -> `doGet()` vi request la GET.
 
-**Các thành phần hiển thị:**
-- Header với logo QLST và menu điều hướng
-- Tiêu đề trang: "Điền thông tin thành viên"
-- Form HTML với action trỏ đến `/register` và method `POST`
-- Nút submit có ID là `btnRegister` với text "Gửi yêu cầu"
-- Link "Đã có tài khoản" chuyển về trang login
+11. Ham `RegisterServlet.doGet()` chi goi `forwardToForm(req, resp)` de hien form dang ky.
 
-**Xử lý lỗi (nếu có):**
-- Hiển thị danh sách lỗi từ attribute `errors` trong alert box màu đỏ
-- Giữ lại dữ liệu đã nhập từ attribute `formData` để người dùng không phải nhập lại
+12. Ham `forwardToForm()` dung `RequestDispatcher` forward request toi hang so `FORM_VIEW = "/jsp/FillInformation.jsp"`.
 
----
+13. Lop `FillInformation.jsp` (`src/main/webapp/jsp/FillInformation.jsp`) khoi tao cac bien JSTL `ctx`, `currentPage`, `currentUser`.
 
-### **Bước 3: Người dùng điền thông tin và submit form**
+14. Lop `FillInformation.jsp` render header `.top-bar` hien logo, menu, trang thai xin chao va nut dang xuat neu `sessionScope.currentUser` ton tai.
 
-**Hành động:**
-- Người dùng điền đầy đủ thông tin vào các trường (họ tên, mật khẩu, email, địa chỉ, số điện thoại)
-- Nhấn nút "Gửi yêu cầu" (có ID là `btnRegister`)
-- Browser gửi request `POST /register` với dữ liệu form dưới dạng form parameters
+15. Lop `FillInformation.jsp` hien phan page header giai thich muc tieu "Dien thong tin thanh vien" va khung noi dung `.card`.
 
----
+16. Lop `FillInformation.jsp` kiem tra `requestScope.errors` de hien hop `<div class="alert">` va danh sach `<li>` thong diep loi bang `<c:forEach>`.
 
-### **Bước 4: RegisterServlet xử lý POST request**
+17. Lop `FillInformation.jsp` tao `<form action="${ctx}/register" method="post" autocomplete="off">` de thu thap thong tin.
 
-**Phương thức xử lý:** `doPost()` của `RegisterServlet`
+18. Form su dung bang `#tblInputInformation` gom cac truong va tu dong dien lai gia tri `${formData}` neu request quay ve tu servlet.
 
-#### **4.1. Thiết lập encoding UTF-8**
-- Servlet đặt character encoding của request thành UTF-8
-- Điều này đảm bảo xử lý đúng các ký tự tiếng Việt
+19. Dong 1 co truong ho ten `input#name` (`type="text"`, `required`, `autocomplete="name"`, placeholder "Nguyen Van A").
 
-#### **4.2. Trích xuất dữ liệu form**
-- Lấy tham số password từ request dưới dạng chuỗi gốc (chưa hash)
-- Gọi phương thức `extractFormData()` để lấy các thông tin khác
+20. Dong 2 co truong mat khau `input#password` (`type="password"`, `required`, `autocomplete="new-password"`, placeholder "Toi thieu 8 ky tu").
 
-**Phương thức `extractFormData()`:**
-- Lấy các parameter từ request (name, email, address, phone)
-- Trim (loại bỏ) khoảng trắng thừa ở đầu và cuối
-- Đối với các trường bắt buộc: convert null thành chuỗi rỗng
-- Đối với các trường tùy chọn: giữ null nếu rỗng
-- Tạo đối tượng `Member` để lưu dữ liệu form đã được làm sạch
+21. Dong 3 co truong `input#email` (`type="email"`, `required`, `autocomplete="email"`) de dam bao dinh dang email hop le.
 
-#### **4.3. Chuẩn bị danh sách lỗi và lưu form data**
-- Tạo một danh sách `errors` để lưu các thông báo lỗi validation
-- Lưu đối tượng `formData` vào request attribute để có thể hiển thị lại khi có lỗi
+22. Dong 4 co truong `input#address` (`type="text"`) tuy chon, lay gia tri `${formData.address}` neu co.
 
----
+23. Dong 5 co truong `input#phone` (`type="tel"`) tuy chon, hien gia tri `${formData.phone}` neu da nhap.
 
-### **Bước 5: Validation dữ liệu - Kiểm tra trường bắt buộc**
+24. Nhom nut `button-row` gom the `<a>` "Da co tai khoan" tro ve `${ctx}/login` va nut submit `<button id="btnRegister" class="btn btn--primary">Gui yeu cau</button>`.
 
-**Phương thức:** `validateRequiredFields()` nhận vào dữ liệu form, mật khẩu và danh sách lỗi
+25. Khach hang dien du lieu va nhan "Gui yeu cau"; trinh duyet thuc hien HTML5 validation (required/type) truoc khi gui.
 
-**Các kiểm tra được thực hiện:**
+26. Neu validation thanh cong, form duoc POST toi `/register` voi noi dung `application/x-www-form-urlencoded`.
 
-1. **Họ và tên không được để trống:**
-   - Kiểm tra xem trường name có blank (null hoặc rỗng) không
-   - Nếu blank, thêm lỗi "Ho va ten khong duoc de trong." vào danh sách errors
+27. Container goi `RegisterServlet.doPost()` de xu ly request POST.
 
-2. **Mật khẩu không được để trống và phải ≥ 8 ký tự:**
-   - Kiểm tra xem password có blank không
-   - Nếu blank, thêm lỗi "Mat khau khong duoc de trong."
-   - Nếu có giá trị nhưng độ dài nhỏ hơn 8 ký tự, thêm lỗi "Mat khau phai co it nhat 8 ky tu."
+28. Ham `doPost()` dat `req.setCharacterEncoding("UTF-8")` de doc dung ky tu Unicode.
 
-3. **Email không được để trống:**
-   - Kiểm tra xem email có blank không
-   - Nếu blank, thêm lỗi "Email khong duoc de trong."
+29. Ham `doPost()` doc mat khau goc bang `StringUtils.defaultString(req.getParameter("password"))`.
 
-**Lưu ý:** Địa chỉ và số điện thoại là các trường tùy chọn, không cần validation.
+30. Ham `doPost()` goi `extractFormData(req)` de tao doi tuong `Member`.
 
----
+31. Ham `extractFormData()` su dung `StringUtils.trimToEmpty` cho `name` va `email` de tranh `null`.
 
-### **Bước 6: Validation dữ liệu - Kiểm tra tính duy nhất**
+32. Ham `extractFormData()` su dung `StringUtils.trimToNull` cho `address` va `phone` de luu gia tri `null` neu nguoi dung bo trong.
 
-**Điều kiện:** Chỉ kiểm tra nếu validation trường bắt buộc thành công (danh sách errors rỗng)
+33. Ham `doPost()` tao danh sach loi `List<String> errors = new ArrayList<>()` va gan `formData` vao request attribute de JSP hien lai gia tri.
 
-**Phương thức:** `validateUniqueness()` nhận vào dữ liệu form và danh sách lỗi
+34. Ham `doPost()` goi `validateRequiredFields(formData, rawPassword, errors)` de kiem tra cac truong bat buoc.
 
-**Sử dụng UserDAO để kiểm tra trong database:**
+35. Ham `validateRequiredFields()` kiem tra `StringUtils.isBlank(formData.getName())` va them "Ho va ten khong duoc de trong." neu vi pham.
 
-1. **Kiểm tra username đã tồn tại chưa:**
-   - Gọi phương thức `findByUsername()` của UserDAO với tên người dùng
-   - Phương thức này query bảng tblUsers để tìm user có username trùng
-   - Nếu tìm thấy (trả về Optional có giá trị), thêm lỗi "Ten dang nhap da ton tai. Vui long chon ten khac."
+36. Ham `validateRequiredFields()` kiem tra `rawPassword` rong hoac co do dai < 8 ky tu va them cac thong diep loi tuong ung.
 
-2. **Kiểm tra email đã được sử dụng chưa:**
-   - Gọi phương thức `findByEmail()` của UserDAO với email
-   - Phương thức này query bảng tblUsers để tìm user có email trùng
-   - Nếu tìm thấy (trả về Optional có giá trị), thêm lỗi "Email da duoc su dung."
+37. Ham `validateRequiredFields()` kiem tra `StringUtils.isBlank(formData.getEmail())` de dam bao email bat buoc.
 
-**Cách hoạt động của UserDAO:**
-- `findByUsername()`: Thực thi câu SQL SELECT để tìm user theo username trong bảng tblUsers
-- `findByEmail()`: Thực thi câu SQL SELECT để tìm user theo email trong bảng tblUsers
-- Cả hai phương thức đều trả về Optional: có giá trị User nếu tìm thấy, empty nếu không tìm thấy
+38. Neu danh sach loi dang rong, `doPost()` goi `validateUniqueness(formData, errors)` de tra soat du lieu trung lap.
 
----
+39. Ham `validateUniqueness()` goi `userDAO.findByUsername(formData.getName())`.
 
-### **Bước 7: Xử lý khi có lỗi validation**
+40. Lop `UserDAO` mo ket noi bang `DBConnection.getConnection()` va chuan bi cau lenh `SELECT ... FROM tblUsers WHERE username = ?`.
 
-**Điều kiện:** `if (!errors.isEmpty())`
+41. Ham `UserDAO.findByUsername()` su dung `PreparedStatement`, set tham so username va thuc thi query.
 
-**Xử lý:**
-```java
-req.setAttribute("errors", errors);
-forwardToForm(req, resp);
-return;
-```
+42. Ham `UserDAO.findByUsername()` map ban ghi dau tien thanh doi tuong `User` bang ham noi bo `mapRow(ResultSet)`.
 
-**Kết quả:**
-- Set attribute `errors` chứa danh sách lỗi
-- Forward lại về `FillInformation.jsp`
-- JSP hiển thị:
-  - Danh sách lỗi trong alert box
-  - Giữ lại dữ liệu đã nhập từ `${formData}`
-- Người dùng sửa lỗi và submit lại (quay lại Bước 3)
+43. Neu `Optional<User>` khong rong, `validateUniqueness()` them thong diep "Ten dang nhap da ton tai. Vui long chon ten khac." vao danh sach loi.
 
----
-
-### **Bước 8: Chuẩn bị dữ liệu để lưu database**
-
-**Điều kiện:** Validation thành công (không có lỗi)
-
-**Phương thức:** `buildMemberToPersist(Member formData, String rawPassword)`
-
-**Xử lý:**
-
-1. **Tạo đối tượng Member mới:**
-```java
-Member member = new Member();
-```
+44. Ham `validateUniqueness()` goi tiep `userDAO.findByEmail(formData.getEmail())`.
 
-2. **Copy dữ liệu từ formData:**
-```java
-member.setName(formData.getName());
-member.setEmail(formData.getEmail());
-member.setAddress(formData.getAddress());
-member.setPhone(formData.getPhone());
-```
-
-3. **Hash mật khẩu sử dụng PasswordUtil:**
-```java
-member.setPassword(PasswordUtil.hashPassword(rawPassword));
-```
-
-**PasswordUtil.hashPassword():**
-- Sử dụng thuật toán SHA-256
-- Convert password thành byte array (UTF-8)
-- Hash và chuyển thành chuỗi hex
-```java
-MessageDigest digest = MessageDigest.getInstance("SHA-256");
-byte[] hashed = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
-// Convert byte array to hex string
-```
-
-**Kết quả:** Đối tượng `Member` sẵn sàng để persist vào database
-
----
-
-### **Bước 9: Lưu thông tin vào database qua MemberDAO**
-
-**Khởi tạo MemberDAO:**
-```java
-try (MemberDAO memberDAO = new MemberDAO()) {
-    savedSuccessfully = memberDAO.saveInformation(memberToPersist);
-}
-```
-
-**Phương thức:** `MemberDAO.saveInformation(Member member)`
-
-#### **9.1. Bắt đầu transaction**
-```java
-boolean originalAutoCommit = con.getAutoCommit();
-con.setAutoCommit(false);  // Tắt auto-commit để quản lý transaction thủ công
-```
-
-#### **9.2. Insert vào bảng tblUsers**
-
-**Phương thức:** `insertUser(Member member)`
-
-**SQL Statement:**
-```sql
-INSERT INTO tblUsers (username, password_hash, role, full_name, email, phone_number, created_at) 
-VALUES (?, ?, ?, ?, ?, ?, ?)
-```
-
-**Mapping dữ liệu:**
-```java
-statement.setString(1, member.getName());        // username
-statement.setString(2, member.getPassword());    // password_hash (đã được hash)
-statement.setString(3, "CUSTOMER");              // role
-statement.setString(4, member.getName());        // full_name
-statement.setString(5, member.getEmail());       // email
-statement.setString(6, member.getPhone());       // phone_number
-statement.setTimestamp(7, Timestamp.valueOf(createdAt)); // created_at
-```
-
-**Lấy generated key:**
-```java
-try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-    if (generatedKeys.next()) {
-        return generatedKeys.getString(1);  // Trả về user ID vừa tạo
-    }
-}
-```
-
-#### **9.3. Chuyển đổi Member sang Customer**
-
-**Phương thức:** `toCustomer(Member member, String userId)`
-
-```java
-Customer customer = new Customer();
-customer.setName(member.getName());
-customer.setEmail(member.getEmail());
-customer.setPhone(member.getPhone());
-customer.setAddress(member.getAddress());
-customer.setUserAccountId(userId);        // Link với user vừa tạo
-customer.setJoinedAt(LocalDateTime.now()); // Thời gian tham gia
-return customer;
-```
-
-**Model Customer:**
-- Kế thừa từ `Member` (có các field: id, name, email, phone, address)
-- Thêm 2 field riêng:
-  - `userAccountId`: Foreign key tới tblUsers
-  - `joinedAt`: Thời gian đăng ký
-
-#### **9.4. Insert vào bảng tblCustomers**
-
-**Gọi:** `customerDAO.save(con, customer)`
-
-**SQL Statement:**
-```sql
-INSERT INTO tblCustomers (user_id, full_name, email, phone_number, address, joined_at) 
-VALUES (?, ?, ?, ?, ?, ?)
-```
-
-**Mapping dữ liệu:**
-```java
-statement.setString(1, customer.getUserAccountId()); // user_id
-statement.setString(2, customer.getName());           // full_name
-statement.setString(3, customer.getEmail());          // email
-statement.setString(4, customer.getPhone());          // phone_number
-statement.setString(5, customer.getAddress());        // address
-statement.setTimestamp(6, Timestamp.valueOf(joinedAt)); // joined_at
-```
-
-**Lấy generated customer ID:**
-```java
-try (ResultSet keys = statement.getGeneratedKeys()) {
-    if (keys.next()) {
-        customer.setId(keys.getString(1));  // Set customer ID
-    }
-}
-```
-
-#### **9.5. Commit transaction**
-```java
-con.commit();
-member.setId(customer.getId());
-return true;
-```
-
-#### **9.6. Xử lý lỗi (rollback nếu có exception)**
-```java
-catch (SQLException ex) {
-    con.rollback();  // Hoàn tác tất cả thay đổi
-    throw ex;
-} finally {
-    con.setAutoCommit(originalAutoCommit);  // Khôi phục auto-commit
-}
-```
-
-**Lợi ích của transaction:**
-- Đảm bảo tính toàn vẹn dữ liệu
-- Insert vào cả 2 bảng thành công hoặc không insert gì cả
-- Tránh trường hợp có user nhưng không có customer profile
-
----
-
-### **Bước 10: Xử lý kết quả lưu database**
-
-#### **10.1. Trường hợp lỗi SQL**
-```java
-catch (SQLException e) {
-    log("Unable to persist member registration", e);
-    errors.add("Khong the tao tai khoan moi. Vui long thu lai sau.");
-    req.setAttribute("errors", errors);
-    forwardToForm(req, resp);
-    return;
-}
-```
-- Log lỗi ra server
-- Thêm thông báo lỗi cho người dùng
-- Forward lại về form để người dùng thử lại
-
-#### **10.2. Trường hợp save không thành công**
-```java
-if (!savedSuccessfully) {
-    errors.add("Khong the tao tai khoan moi. Vui long thu lai sau.");
-    req.setAttribute("errors", errors);
-    forwardToForm(req, resp);
-    return;
-}
-```
-- Xử lý tương tự như lỗi SQL
-
----
-
-### **Bước 11: Đăng ký thành công - Redirect đến trang login**
-
-**Điều kiện:** `savedSuccessfully == true`
-
-**Xử lý:**
-```java
-resp.sendRedirect(req.getContextPath() + "/login?registered=true");
-```
-
-**Kết quả:**
-- Browser redirect (HTTP 302) đến URL: `/login?registered=true`
-- Query parameter `registered=true` có thể được sử dụng để hiển thị thông báo thành công
-- Người dùng có thể đăng nhập bằng tài khoản vừa tạo
-
----
-
-## SƠ ĐỒ TỔNG QUAN
-
-```
-[Người dùng] 
-    ↓ (1) Click "Đăng ký"
-    ↓ GET /register
-[RegisterServlet.doGet()]
-    ↓ (2) Forward
-[FillInformation.jsp] 
-    ↓ (3) Hiển thị form
-[Người dùng điền thông tin]
-    ↓ (4) Submit form
-    ↓ POST /register
-[RegisterServlet.doPost()]
-    ↓ (5) Extract form data
-    ↓ (6) Validate required fields
-    ↓ (7) Validate uniqueness via UserDAO
-    ├─→ Có lỗi? → Set errors → Forward to JSP → Hiển thị lỗi (quay lại 3)
-    ↓ Không lỗi
-    ↓ (8) Hash password (PasswordUtil)
-    ↓ (9) Build Member object
-[MemberDAO.saveInformation()]
-    ↓ (10) Begin transaction
-    ↓ (11) Insert tblUsers → Get userId
-    ↓ (12) Create Customer object
-    ↓ (13) Insert tblCustomers (CustomerDAO)
-    ↓ (14) Commit transaction
-    ├─→ SQLException? → Rollback → Throw exception → Forward to JSP (quay lại 3)
-    ↓ Success
-[RegisterServlet]
-    ↓ (15) Redirect to /login?registered=true
-[Trang đăng nhập]
-    └─→ Người dùng đăng nhập với tài khoản mới
-```
-
----
-
-## CÁC LỚP VÀ TRÁCH NHIỆM
-
-### **1. Lớp View (Presentation Layer)**
-- **FillInformation.jsp**
-  - Hiển thị form đăng ký
-  - Render dữ liệu từ `${formData}` và `${errors}`
-  - Submit form đến `/register`
-
-### **2. Lớp Controller (Servlet Layer)**
-- **RegisterServlet**
-  - `doGet()`: Điều hướng đến JSP
-  - `doPost()`: Xử lý logic đăng ký
-  - Validation dữ liệu đầu vào
-  - Điều phối giữa View và Model
-  - Quản lý request/response
-
-### **3. Lớp DAO (Data Access Layer)**
-- **MemberDAO**
-  - `saveInformation()`: Lưu member với transaction
-  - Quản lý insert vào tblUsers và tblCustomers
-  - Xử lý transaction (commit/rollback)
-
-- **UserDAO**
-  - `findByUsername()`: Kiểm tra username tồn tại
-  - `findByEmail()`: Kiểm tra email tồn tại
-
-- **CustomerDAO**
-  - `save()`: Insert customer profile vào database
-
-- **DAO (Base class)**
-  - Quản lý database connection
-  - Được kế thừa bởi MemberDAO
-
-### **4. Lớp Model (Entity Layer)**
-- **Member**
-  - Properties: id, name, password, email, phone, address
-  - Đại diện cho thông tin đăng ký
-
-- **Customer** (extends Member)
-  - Thêm properties: userAccountId, joinedAt
-  - Đại diện cho customer profile trong database
-
-- **User**
-  - Đại diện cho tài khoản trong tblUsers
-  - Dùng cho authentication
-
-### **5. Lớp Utility**
-- **PasswordUtil**
-  - `hashPassword()`: Hash password bằng SHA-256
-  - `matches()`: Kiểm tra password (dùng cho login)
-
-- **StringUtils** (Apache Commons)
-  - `trimToEmpty()`: Trim và convert null thành ""
-  - `trimToNull()`: Trim và convert blank thành null
-  - `isBlank()`: Kiểm tra null hoặc rỗng
-
----
-
-## DATABASE SCHEMA
-
-### **Bảng tblUsers**
-```sql
-CREATE TABLE tblUsers (
-    id VARCHAR PRIMARY KEY,
-    username VARCHAR UNIQUE NOT NULL,
-    password_hash VARCHAR NOT NULL,
-    role VARCHAR NOT NULL,           -- "CUSTOMER"
-    full_name VARCHAR,
-    email VARCHAR UNIQUE,
-    phone_number VARCHAR,
-    created_at TIMESTAMP
-);
-```
-
-### **Bảng tblCustomers**
-```sql
-CREATE TABLE tblCustomers (
-    id VARCHAR PRIMARY KEY,
-    user_id VARCHAR REFERENCES tblUsers(id),
-    full_name VARCHAR,
-    email VARCHAR,
-    phone_number VARCHAR,
-    address VARCHAR,
-    joined_at TIMESTAMP
-);
-```
-
-**Quan hệ:** tblCustomers.user_id → tblUsers.id (One-to-One)
-
----
-
-## CÁC TRƯỜNG HỢP ĐẶC BIỆT
-
-### **1. Username đã tồn tại**
-- Lỗi: "Ten dang nhap da ton tai. Vui long chon ten khac."
-- Người dùng phải chọn tên khác
-
-### **2. Email đã được sử dụng**
-- Lỗi: "Email da duoc su dung."
-- Người dùng phải dùng email khác
-
-### **3. Mật khẩu quá ngắn**
-- Lỗi: "Mat khau phai co it nhat 8 ky tu."
-- Người dùng phải nhập mật khẩu ≥ 8 ký tự
-
-### **4. Trường bắt buộc để trống**
-- Lỗi tương ứng cho từng trường
-- Form giữ lại dữ liệu đã nhập
-
-### **5. Lỗi database/transaction**
-- Rollback tất cả thay đổi
-- Thông báo: "Khong the tao tai khoan moi. Vui long thu lai sau."
-- Log lỗi chi tiết ở server
-
----
-
-## LUỒNG DỮ LIỆU
-
-```
-Form Input (JSP)
-    ↓
-HTTP POST Parameters
-    ↓
-RegisterServlet (trim, validate)
-    ↓
-Member object (plain password)
-    ↓
-Hash password (PasswordUtil)
-    ↓
-Member object (hashed password)
-    ↓
-MemberDAO.saveInformation()
-    ↓
-INSERT tblUsers → userId
-    ↓
-Convert to Customer object
-    ↓
-CustomerDAO.save() → INSERT tblCustomers
-    ↓
-Database (2 bảng được insert)
-```
-
----
-
-## KẾT LUẬN
-
-Quy trình đăng ký thành viên được thiết kế theo kiến trúc MVC chuẩn với:
-- **Separation of Concerns**: Mỗi lớp có trách nhiệm riêng biệt
-- **Transaction Management**: Đảm bảo tính toàn vẹn dữ liệu
-- **Security**: Hash password trước khi lưu
-- **Validation**: Kiểm tra dữ liệu ở nhiều tầng
-- **User Experience**: Giữ lại dữ liệu và hiển thị lỗi rõ ràng
-- **Error Handling**: Xử lý exception và rollback khi cần
-
-Luồng xử lý từ người dùng → Servlet → DAO → Database được tổ chức rõ ràng, dễ bảo trì và mở rộng.
+45. Ham `UserDAO.findByEmail()` thuc hien cau SQL `SELECT ... FROM tblUsers WHERE email = ?` va tra ve `Optional<User>`.
+
+46. Neu email da duoc su dung, `validateUniqueness()` them thong diep "Email da duoc su dung." vao danh sach loi.
+
+47. Neu `UserDAO` nem `SQLException`, `validateUniqueness()` bao boc thanh `ServletException` voi thong diep "Khong the kiem tra tinh duy nhat cua ten dang nhap/email.".
+
+48. Khi `errors` khong rong, `doPost()` gan attribute `errors` va goi `forwardToForm(req, resp)` de render lai `FillInformation.jsp`.
+
+49. Lop `FillInformation.jsp` lap qua `${errors}` bang `<c:forEach>` va hien danh sach loi de khach hang sua thong tin.
+
+50. Khach hang dieu chinh du lieu va gui lai form (lap lai cac buoc 25-48) cho den khi tat ca dieu kien hop le.
+
+51. Khi khong con loi, `doPost()` goi `Member memberToPersist = buildMemberToPersist(formData, rawPassword)`.
+
+52. Ham `buildMemberToPersist()` copy `name`, `email`, `address`, `phone` sang doi tuong moi.
+
+53. Ham `buildMemberToPersist()` goi `PasswordUtil.hashPassword(rawPassword)` de ma hoa mat khau bang SHA-256 va set vao truong `password`.
+
+54. Lop `PasswordUtil` dung `MessageDigest` voi thuat toan `"SHA-256"`, ma hoa chuoi UTF-8 va ghep moi byte thanh chuoi hex `%02x`.
+
+55. Ham `doPost()` mo khoi `try (MemberDAO memberDAO = new MemberDAO()) { ... }` de dam bao ket noi JDBC duoc dong tu dong.
+
+56. Lop `MemberDAO` ke thua `DAO`; constructor lop cha goi `DBConnection.getConnection()` va gan truong `Connection con`.
+
+57. Ham `MemberDAO.saveInformation(memberToPersist)` khoi dong giao dich tao tai khoan thanh vien.
+
+58. Ham `saveInformation()` luu trang thai `autoCommit`, dat `con.setAutoCommit(false)` de tu quan ly giao dich.
+
+59. Ham `saveInformation()` goi `String userId = insertUser(member)` de chen ban ghi vao `tblUsers`.
+
+60. Ham `insertUser()` tao `PreparedStatement` voi `Statement.RETURN_GENERATED_KEYS` va set cac cot username, password_hash, role = `"CUSTOMER"`, full_name, email, phone_number, created_at (`Timestamp` tu `LocalDateTime.now()`).
+
+61. Ham `insertUser()` thuc thi `executeUpdate()` va doc `generatedKeys` de thu ve `id` user moi tao.
+
+62. Neu khong the doc khoa sinh ra, `insertUser()` nem `SQLException` "Khong the lay ma nguoi dung sau khi tao thanh vien.".
+
+63. Ham `saveInformation()` goi `Customer customer = toCustomer(member, userId)` de tao doi tuong `Customer`.
+
+64. Ham `toCustomer()` copy `name`, `email`, `phone`, `address`, set `userAccountId = userId` va `joinedAt = LocalDateTime.now()`.
+
+65. Ham `saveInformation()` goi `customerDAO.save(con, customer)` de chen ho so khach hang vao `tblCustomers`.
+
+66. Ham `CustomerDAO.save()` kiem tra `customer.getUserAccountId()` khong null; neu null thi nem `IllegalArgumentException`.
+
+67. Ham `CustomerDAO.save()` tao `PreparedStatement` `INSERT INTO tblCustomers (user_id, full_name, email, phone_number, address, joined_at) VALUES (?, ?, ?, ?, ?, ?)` va set du lieu.
+
+68. Ham `CustomerDAO.save()` dat `Timestamp.valueOf(joinedAt)` (neu `joinedAt` null thi dat `LocalDateTime.now()`) truoc khi thuc thi `executeUpdate()`.
+
+69. Ham `CustomerDAO.save()` doc `ResultSet keys = statement.getGeneratedKeys()` va gan `customer.setId(keys.getString(1))` neu co ban ghi.
+
+70. Sau khi chen thanh cong ca user va customer, `saveInformation()` goi `con.commit()` de hoan tat giao dich.
+
+71. Ham `saveInformation()` gan `member.setId(customer.getId())` de servlet biet ma khach hang moi.
+
+72. Ham `saveInformation()` tra ve `true` de thong bao luu thanh cong.
+
+73. Neu bat ky `SQLException` nao xay ra, `saveInformation()` goi `con.rollback()` roi nem lai loi cho tang goi.
+
+74. Khoi `finally` cua `saveInformation()` khoi phuc trang thai `con.setAutoCommit(originalAutoCommit)`.
+
+75. Trong `RegisterServlet`, neu `memberDAO.saveInformation()` nem loi, `doPost()` goi `log("Unable to persist member registration", e)` va them thong diep "Khong the tao tai khoan moi. Vui long thu lai sau.".
+
+76. Neu `saveInformation()` tra ve `false`, `doPost()` cung them thong diep loi chung va forward ve form.
+
+77. Khi viec luu thanh cong, `doPost()` dat request attribute `member = memberToPersist` (chua id, ten, email, phone, address).
+
+78. Ham `doPost()` forward request toi `/jsp/DoSaveMember.jsp` de hien thong bao thanh cong.
+
+79. Lop `DoSaveMember.jsp` import `com.qlst.model.Member` va doc doi tuong tu `request.getAttribute("member")`.
+
+80. Lop `DoSaveMember.jsp` kiem tra neu `member == null` thi `response.sendRedirect(request.getContextPath() + "/register")` de ngan truy cap truc tiep.
+
+81. Lop `DoSaveMember.jsp` render icon thanh cong SVG, tieu de "Dang ky thanh cong!" va mo ta loi chao.
+
+82. Lop `DoSaveMember.jsp` hien `div.member-info` voi cac dong thong tin ho ten va email luon co.
+
+83. Lop `DoSaveMember.jsp` hien dong "So dien thoai" neu `member.getPhone()` khong rong va dong "Dia chi" neu `member.getAddress()` khong rong.
+
+84. Lop `DoSaveMember.jsp` hien nhom nut `.action-buttons` gom 2 hanh dong.
+
+85. Nut "Dang nhap ngay" lien ket toi `${ctx}/login?registered=true` de thong bao he thong ve viec dang ky vua hoan tat.
+
+86. Nut "Ve trang chu" tro ve `${ctx}/` de khach hang quay lai trang chu.
+
+87. Khi nguoi dung click "Dang nhap ngay", trinh duyet gui GET `/login?registered=true`.
+
+88. Ham `LoginServlet.doGet()` nhan tham so `registered=true` va set request attribute `message = "Dang ky thanh cong. Vui long dang nhap."`.
+
+89. Lop `login.jsp` kiem tra `${not empty message}` va hien `<div class="alert" role="status">` thong bao thanh cong tren trang dang nhap.
+
+90. Neu nguoi dung quay lai `/register`, `RegisterServlet.doGet()` lap lai cac buoc 11-24 de cung cap form dang ky.
+
+91. Lop `RegisterServlet` ke thua `HttpServlet`, su dung cac vong doi `init()` / `destroy()` duoc container quan ly cho he thong servlet.
+
+92. Lop `MemberDAO` trien khai `AutoCloseable` (thong qua lop cha `DAO`) nen try-with-resources o buoc 55 se dong ket noi du even co loi.
+
+93. Lop `DBConnection` nap file `src/main/resources/db.properties`, dang ky driver `com.mysql.cj.jdbc.Driver` va tao chuoi `jdbc:mysql://host:port/database` cho toan bo DAO.
+
+94. Lop `PasswordUtil` cung cap them ham `matches()` duoc `LoginServlet` su dung, dam bao gia tri hash tao o buoc 53 co the duoc doi chieu khi nguoi dung dang nhap sau nay.

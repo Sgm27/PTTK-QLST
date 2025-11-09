@@ -2,13 +2,11 @@ package com.qlst.dao;
 
 import com.qlst.model.Customer;
 import com.qlst.model.Order;
-import com.qlst.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,21 +27,16 @@ public class CustomerDAO {
             joinedAt = LocalDateTime.now();
             customer.setJoinedAt(joinedAt);
         }
-        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, customer.getUserAccountId()); 
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, customer.getUserAccountId());
             statement.setString(2, customer.getName());
-
             statement.setString(3, customer.getEmail());
             statement.setString(4, customer.getPhone());
             statement.setString(5, customer.getAddress());
             statement.setTimestamp(6, Timestamp.valueOf(joinedAt));
             statement.executeUpdate();
-            try (ResultSet keys = statement.getGeneratedKeys()) {
-                if (keys.next()) {
-                    customer.setId(keys.getString(1)); 
-                }
-            }
         }
+        assignCustomerId(connection, customer);
     }
 
     public Customer resolveCustomer(String customerId, List<Order> orders) {
@@ -53,5 +46,19 @@ public class CustomerDAO {
         Customer customer = new Customer();
         customer.setId(customerId);
         return customer;
+    }
+
+    private void assignCustomerId(Connection connection, Customer customer) throws SQLException {
+        String sql = "SELECT id FROM tblCustomers WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, customer.getUserAccountId());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    customer.setId(resultSet.getString("id"));
+                    return;
+                }
+            }
+        }
+        throw new SQLException("Khong the lay ma khach hang sau khi tao ho so.");
     }
 }

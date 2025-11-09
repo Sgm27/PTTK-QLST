@@ -70,7 +70,9 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        resp.sendRedirect(req.getContextPath() + "/login?registered=true");
+        // Forward to success page with member information
+        req.setAttribute("member", memberToPersist);
+        req.getRequestDispatcher("/jsp/DoSaveMember.jsp").forward(req, resp);
     }
 
     private Member extractFormData(HttpServletRequest req) {
