@@ -22,7 +22,7 @@ public class CustomerDAO {
         if (customer.getUserAccountId() == null) {
             throw new IllegalArgumentException("Customer must have an associated user account id before saving.");
         }
-        String sql = "INSERT INTO customers (user_id, full_name, email, phone_number, address, joined_at) "
+        String sql = "INSERT INTO tblCustomers (user_id, full_name, email, phone_number, address, joined_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         LocalDateTime joinedAt = customer.getJoinedAt();
         if (joinedAt == null) {
@@ -55,4 +55,3 @@ public class CustomerDAO {
         return customer;
     }
 }
-

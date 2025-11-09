@@ -26,10 +26,10 @@ Hướng dẫn cho AI coding assistant xây dựng hệ thống Quản lý Sàn 
 - Link đến register
 - Validation + Error messages
 
-**b) register.jsp**
-- Form: username, password, full_name, email, phone_number, address
-- Checkbox chọn role (CUSTOMER/MANAGER)
-- Validation đầy đủ
+**b) FillInformation.jsp**
+- Bảng `tblInputInformation` thu thập name, password, email, address, phone
+- Nút `btnRegister` gửi POST đến DoSaveMember.jsp
+- Validation đầy đủ trên client + server
 
 **c) customer_statistics.jsp** ⭐ **TÁCH RIÊNG**
 - CHỈ hiển thị bảng tổng hợp doanh thu
@@ -55,9 +55,9 @@ Hướng dẫn cho AI coding assistant xây dựng hệ thống Quản lý Sàn 
 - GET: Hiển thị form
 - POST: Xác thực, session, redirect theo role
 
-**b) RegisterServlet** - `/register`
-- GET: Hiển thị form
-- POST: Tạo user + customer, validate, hash password
+**b) FillInformation.jsp / DoSaveMember.jsp** - `/jsp/FillInformation.jsp`
+- FillInformation.jsp hiển thị form thu thập thông tin
+- DoSaveMember.jsp xử lý POST, tạo user + customer, validate, hash password
 
 **c) CustomerStatisticsServlet** ⭐ - `/statistics/customers`
 - GET/POST: Form + bảng thống kê
@@ -166,7 +166,7 @@ transactions: id, customer_id (FK), amount, transaction_date, description
 
 ### Authentication
 - Filter check session cho protected routes
-- Public paths: /login, /register, /assets/
+- Public paths: /login, /jsp/FillInformation.jsp, /assets/
 
 ### Password
 - Hash với SHA-256

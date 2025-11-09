@@ -34,7 +34,7 @@
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
-                    <a class="nav-link${currentPage eq 'register' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
+                    <a class="nav-link${currentPage eq 'fillInformation' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
                     <a class="nav-link${currentPage eq 'statistics' ? ' is-active' : ''}" href="${ctx}/jsp/MainManagement.jsp">Thống kê</a>
                 </c:otherwise>
             </c:choose>
@@ -88,11 +88,11 @@
                 </div>
                 
                 <div class="search-box">
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        class="search-box__input" 
-                        placeholder="Tìm kiếm theo mã khách hàng (KH...) hoặc tên khách hàng..."
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-box__input"
+                        placeholder="Tìm kiếm nhanh theo mã hoặc tên khách hàng..."
                         autocomplete="off"
                     >
                     <button type="button" id="searchBtn" class="btn btn--primary search-box__btn">
@@ -157,36 +157,23 @@
     const rows = Array.from(tbody.querySelectorAll('tr'));
     
     searchInput.addEventListener('input', function() {
-        const searchText = this.value.trim();
-        
+        const searchText = this.value.trim().toLowerCase();
+
         if (searchText === '') {
-            // Hiển thị tất cả các dòng nếu ô tìm kiếm trống
             rows.forEach(row => {
                 row.style.display = '';
             });
             return;
         }
-        
-        const searchUpper = searchText.toUpperCase();
-        const searchByCode = searchUpper.startsWith('KH');
-        
+
         rows.forEach(row => {
             const cells = row.querySelectorAll('td');
             if (cells.length < 2) return;
-            
-            const customerId = cells[0].textContent.trim().toUpperCase();
-            const customerName = cells[1].textContent.trim().toUpperCase();
-            
-            let isMatch = false;
-            
-            if (searchByCode) {
-                // Tìm theo mã khách hàng
-                isMatch = customerId.includes(searchUpper);
-            } else {
-                // Tìm theo tên khách hàng
-                isMatch = customerName.includes(searchUpper);
-            }
-            
+
+            const customerId = cells[0].textContent.trim().toLowerCase();
+            const customerName = cells[1].textContent.trim().toLowerCase();
+
+            const isMatch = customerId.includes(searchText) || customerName.includes(searchText);
             row.style.display = isMatch ? '' : 'none';
         });
     });

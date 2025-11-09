@@ -31,7 +31,7 @@
                 </c:when>
                 <c:otherwise>
                     <a class="nav-link${currentPage eq 'login' ? ' is-active' : ''}" href="${ctx}/login">Đăng nhập</a>
-                    <a class="nav-link${currentPage eq 'register' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
+                    <a class="nav-link${currentPage eq 'fillInformation' ? ' is-active' : ''}" href="${ctx}/register">Đăng ký</a>
                     <a class="nav-link${currentPage eq 'statistics' ? ' is-active' : ''}" href="${ctx}/jsp/MainManagement.jsp">Thống kê</a>
                 </c:otherwise>
             </c:choose>

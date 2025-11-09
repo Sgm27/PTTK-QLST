@@ -13,7 +13,7 @@ from db_utils import (
     print_connection_banner,
 )
 
-REQUIRED_TABLES = ("users", "customers", "transactions")
+REQUIRED_TABLES = ("tblUsers", "tblCustomers", "tblTransactions")
 
 USERS = [
     {
@@ -139,7 +139,7 @@ def ensure_schema(cursor) -> None:
 
 def reset_tables(cursor) -> None:
     cursor.execute("SET FOREIGN_KEY_CHECKS = 0")
-    for table in ("transactions", "customers", "users"):
+    for table in ("tblTransactions", "tblCustomers", "tblUsers"):
         cursor.execute(f"TRUNCATE TABLE {table}")
     cursor.execute("SET FOREIGN_KEY_CHECKS = 1")
 
@@ -149,7 +149,7 @@ def insert_users(cursor) -> Dict[str, int]:
     for entry in USERS:
         cursor.execute(
             """
-            INSERT INTO users (username, password_hash, role, full_name, email, phone_number, created_at)
+            INSERT INTO tblUsers (username, password_hash, role, full_name, email, phone_number, created_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """,
             (
@@ -173,9 +173,9 @@ def insert_customers(cursor, user_ids: Dict[str, int]) -> Dict[str, int]:
         user_id = user_ids[username]
         cursor.execute(
             """
-            INSERT INTO customers (user_id, full_name, email, phone_number, address, joined_at)
+            INSERT INTO tblCustomers (user_id, full_name, email, phone_number, address, joined_at)
             SELECT %s, u.full_name, u.email, u.phone_number, %s, %s
-            FROM users u
+            FROM tblUsers u
             WHERE u.id = %s
             """,
             (
@@ -194,7 +194,7 @@ def insert_transactions(cursor, customer_ids: Dict[str, int]) -> None:
         customer_id = customer_ids[entry["username"]]
         cursor.execute(
             """
-            INSERT INTO transactions (customer_id, amount, transaction_date, description)
+            INSERT INTO tblTransactions (customer_id, amount, transaction_date, description)
             VALUES (%s, %s, %s, %s)
             """,
             (

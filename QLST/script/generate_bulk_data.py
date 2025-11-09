@@ -15,7 +15,7 @@ from db_utils import (
     print_connection_banner,
 )
 
-REQUIRED_TABLES = ("users", "customers", "orders", "order_details", "products")
+REQUIRED_TABLES = ("tblUsers", "tblCustomers", "tblOrders", "tblOrderDetails", "tblProducts")
 DEFAULT_END = date.today()
 DEFAULT_START = date(2025, 1, 1)  # Changed to 01/01/2025
 PASSWORD_DEFAULT = "customer123"
@@ -162,14 +162,14 @@ def insert_customers(cursor, count: int) -> Dict[str, str]:
     # Get existing usernames and emails
     existing_usernames = set()
     existing_emails = set()
-    cursor.execute("SELECT username FROM users")
+    cursor.execute("SELECT username FROM tblUsers")
     existing_usernames.update(username for (username,) in cursor.fetchall())
-    cursor.execute("SELECT email FROM users")
+    cursor.execute("SELECT email FROM tblUsers")
     existing_emails.update(email for (email,) in cursor.fetchall())
 
     # Get next ID numbers
-    next_user_num = get_next_id_number(cursor, "users", "ND")
-    next_customer_num = get_next_id_number(cursor, "customers", "KH")
+    next_user_num = get_next_id_number(cursor, "tblUsers", "ND")
+    next_customer_num = get_next_id_number(cursor, "tblCustomers", "KH")
 
     customer_ids: Dict[str, str] = {}
     
@@ -196,7 +196,7 @@ def insert_customers(cursor, count: int) -> Dict[str, str]:
         # Insert user
         cursor.execute(
             """
-            INSERT INTO users (id, username, password_hash, role, full_name, email, phone_number, created_at)
+            INSERT INTO tblUsers (id, username, password_hash, role, full_name, email, phone_number, created_at)
             VALUES (%s, %s, %s, 'CUSTOMER', %s, %s, %s, %s)
             """,
             (
@@ -215,7 +215,7 @@ def insert_customers(cursor, count: int) -> Dict[str, str]:
         # Insert customer
         cursor.execute(
             """
-            INSERT INTO customers (id, full_name, email, phone_number, address, joined_at, user_id)
+            INSERT INTO tblCustomers (id, full_name, email, phone_number, address, joined_at, user_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """,
             (
@@ -237,7 +237,7 @@ def insert_customers(cursor, count: int) -> Dict[str, str]:
 
 def fetch_all_customer_ids(cursor) -> List[str]:
     """Fetch all customer IDs from database."""
-    cursor.execute("SELECT id FROM customers")
+    cursor.execute("SELECT id FROM tblCustomers")
     return [customer_id for (customer_id,) in cursor.fetchall()]
 
 
@@ -247,7 +247,7 @@ def fetch_all_products(cursor) -> List[Tuple[str, Decimal]]:
     Returns:
         List of tuples (product_id, price)
     """
-    cursor.execute("SELECT id, price FROM products WHERE quantity > 0")
+    cursor.execute("SELECT id, price FROM tblProducts WHERE quantity > 0")
     return [(product_id, Decimal(str(price))) for product_id, price in cursor.fetchall()]
 
 
@@ -263,7 +263,7 @@ def insert_orders(cursor, customer_ids: Sequence[str], count: int, start: date, 
     start_dt = datetime.combine(start, time.min)
     delta_days = (end - start).days or 1
     
-    next_order_num = get_next_id_number(cursor, "orders", "DH")
+    next_order_num = get_next_id_number(cursor, "tblOrders", "DH")
     order_ids: List[str] = []
 
     for i in range(count):
@@ -286,7 +286,7 @@ def insert_orders(cursor, customer_ids: Sequence[str], count: int, start: date, 
         # For now, insert with placeholder
         cursor.execute(
             """
-            INSERT INTO orders (id, order_date, total_price, delivery_invoice_number, created_at, customer_id)
+            INSERT INTO tblOrders (id, order_date, total_price, delivery_invoice_number, created_at, customer_id)
             VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (
@@ -322,7 +322,7 @@ def insert_order_details(cursor, order_ids: Sequence[str], products: List[Tuple[
             
             cursor.execute(
                 """
-                INSERT INTO order_details (order_id, product_id, quantity, price)
+                INSERT INTO tblOrderDetails (order_id, product_id, quantity, price)
                 VALUES (%s, %s, %s, %s)
                 """,
                 (
@@ -336,7 +336,7 @@ def insert_order_details(cursor, order_ids: Sequence[str], products: List[Tuple[
         # Update order total_price
         cursor.execute(
             """
-            UPDATE orders SET total_price = %s WHERE id = %s
+            UPDATE tblOrders SET total_price = %s WHERE id = %s
             """,
             (total_price, order_id),
         )

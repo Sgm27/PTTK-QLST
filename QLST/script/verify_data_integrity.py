@@ -12,8 +12,8 @@ def verify_foreign_keys(cursor):
     # Check customers.user_id -> users.id
     cursor.execute("""
         SELECT c.id, c.user_id 
-        FROM customers c 
-        LEFT JOIN users u ON c.user_id = u.id 
+        FROM tblCustomers c 
+        LEFT JOIN tblUsers u ON c.user_id = u.id 
         WHERE u.id IS NULL
     """)
     orphaned_customers = cursor.fetchall()
@@ -25,8 +25,8 @@ def verify_foreign_keys(cursor):
     # Check orders.customer_id -> customers.id
     cursor.execute("""
         SELECT o.id, o.customer_id 
-        FROM orders o 
-        LEFT JOIN customers c ON o.customer_id = c.id 
+        FROM tblOrders o 
+        LEFT JOIN tblCustomers c ON o.customer_id = c.id 
         WHERE c.id IS NULL
     """)
     orphaned_orders = cursor.fetchall()
@@ -38,8 +38,8 @@ def verify_foreign_keys(cursor):
     # Check order_details.order_id -> orders.id
     cursor.execute("""
         SELECT od.order_id 
-        FROM order_details od 
-        LEFT JOIN orders o ON od.order_id = o.id 
+        FROM tblOrderDetails od 
+        LEFT JOIN tblOrders o ON od.order_id = o.id 
         WHERE o.id IS NULL
     """)
     orphaned_order_details = cursor.fetchall()
@@ -51,8 +51,8 @@ def verify_foreign_keys(cursor):
     # Check order_details.product_id -> products.id
     cursor.execute("""
         SELECT od.order_id, od.product_id 
-        FROM order_details od 
-        LEFT JOIN products p ON od.product_id = p.id 
+        FROM tblOrderDetails od 
+        LEFT JOIN tblProducts p ON od.product_id = p.id 
         WHERE p.id IS NULL
     """)
     orphaned_products = cursor.fetchall()
@@ -73,7 +73,7 @@ def verify_unique_constraints(cursor):
     # Check duplicate usernames
     cursor.execute("""
         SELECT username, COUNT(*) as cnt 
-        FROM users 
+        FROM tblUsers 
         GROUP BY username 
         HAVING cnt > 1
     """)
@@ -86,7 +86,7 @@ def verify_unique_constraints(cursor):
     # Check duplicate emails
     cursor.execute("""
         SELECT email, COUNT(*) as cnt 
-        FROM users 
+        FROM tblUsers 
         GROUP BY email 
         HAVING cnt > 1
     """)
@@ -108,8 +108,8 @@ def verify_order_totals(cursor):
             o.id,
             o.total_price as order_total,
             COALESCE(SUM(od.quantity * od.price), 0) as calculated_total
-        FROM orders o
-        LEFT JOIN order_details od ON o.id = od.order_id
+        FROM tblOrders o
+        LEFT JOIN tblOrderDetails od ON o.id = od.order_id
         GROUP BY o.id, o.total_price
         HAVING ABS(o.total_price - calculated_total) > 0.01
     """)
@@ -133,7 +133,7 @@ def verify_date_range(cursor):
         SELECT 
             MIN(order_date) as min_date,
             MAX(order_date) as max_date
-        FROM orders
+        FROM tblOrders
     """)
     
     result = cursor.fetchone()
@@ -162,8 +162,8 @@ def verify_customer_roles(cursor):
     
     cursor.execute("""
         SELECT u.id, u.username, u.role
-        FROM users u
-        JOIN customers c ON c.user_id = u.id
+        FROM tblUsers u
+        JOIN tblCustomers c ON c.user_id = u.id
         WHERE u.role != 'CUSTOMER'
     """)
     
@@ -183,22 +183,22 @@ def print_statistics(cursor):
     print("\n📊 Thống kê dữ liệu:")
     
     # Count managers
-    cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'MANAGER'")
+    cursor.execute("SELECT COUNT(*) FROM tblUsers WHERE role = 'MANAGER'")
     manager_count = cursor.fetchone()[0]
     print(f"   - Managers: {manager_count}")
     
     # Count customers
-    cursor.execute("SELECT COUNT(*) FROM customers")
+    cursor.execute("SELECT COUNT(*) FROM tblCustomers")
     customer_count = cursor.fetchone()[0]
     print(f"   - Customers: {customer_count}")
     
     # Count orders
-    cursor.execute("SELECT COUNT(*) FROM orders")
+    cursor.execute("SELECT COUNT(*) FROM tblOrders")
     order_count = cursor.fetchone()[0]
     print(f"   - Orders: {order_count}")
     
     # Count order details
-    cursor.execute("SELECT COUNT(*) FROM order_details")
+    cursor.execute("SELECT COUNT(*) FROM tblOrderDetails")
     order_detail_count = cursor.fetchone()[0]
     print(f"   - Order Details: {order_detail_count}")
     
@@ -208,7 +208,7 @@ def print_statistics(cursor):
         print(f"   - Trung bình sản phẩm/đơn: {avg_items:.2f}")
     
     # Total revenue
-    cursor.execute("SELECT SUM(total_price) FROM orders")
+    cursor.execute("SELECT SUM(total_price) FROM tblOrders")
     total_revenue = cursor.fetchone()[0] or 0
     print(f"   - Tổng doanh thu: {total_revenue:,.0f} VNĐ")
 

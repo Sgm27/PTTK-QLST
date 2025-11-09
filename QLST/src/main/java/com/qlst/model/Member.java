@@ -4,13 +4,12 @@ package com.qlst.model;
  * Represents a registered member in the supermarket system.
  */
 public class Member {
-    private String id; 
+    private String id;
     private String name;
     private String password;
     private String email;
     private String phone;
     private String address;
-    private String note;
 
     public String getId() {
         return id;
@@ -60,12 +59,4 @@ public class Member {
         this.address = address;
     }
 
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
 }
-

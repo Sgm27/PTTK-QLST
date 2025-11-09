@@ -23,8 +23,8 @@ public class CustomerStatisticDAO extends DAO {
     private static final String CUSTOMER_REVENUE_SQL =
             "SELECT c.id AS customer_id, c.full_name, c.email, c.phone_number, c.address, "
                     + "SUM(o.total_price) AS total_revenue "
-                    + "FROM orders o "
-                    + "JOIN customers c ON o.customer_id = c.id "
+                    + "FROM tblOrders o "
+                    + "JOIN tblCustomers c ON o.customer_id = c.id "
                     + "WHERE o.order_date >= ? AND o.order_date < ? "
                     + "GROUP BY c.id, c.full_name, c.email, c.phone_number, c.address "
                     + "ORDER BY total_revenue DESC";

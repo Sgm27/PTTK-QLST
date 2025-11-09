@@ -25,8 +25,8 @@ public class OrderDAO extends DAO {
     private static final String ORDER_LIST_SQL =
             "SELECT o.id AS order_id, o.order_date, o.total_price, "
                     + "c.id AS customer_id, c.full_name, c.email, c.phone_number, c.address "
-                    + "FROM orders o "
-                    + "JOIN customers c ON o.customer_id = c.id "
+                    + "FROM tblOrders o "
+                    + "JOIN tblCustomers c ON o.customer_id = c.id "
                     + "WHERE o.customer_id = ? AND o.order_date >= ? AND o.order_date < ? "
                     + "ORDER BY o.order_date DESC, o.id DESC";
 
@@ -35,10 +35,10 @@ public class OrderDAO extends DAO {
                     + "c.id AS customer_id, c.full_name, c.email, c.phone_number, c.address, "
                     + "od.quantity AS order_detail_quantity, od.price AS order_detail_price, "
                     + "p.id AS product_id, p.name AS product_name, p.price AS product_price, p.quantity AS product_stock_quantity "
-                    + "FROM orders o "
-                    + "JOIN customers c ON o.customer_id = c.id "
-                    + "LEFT JOIN order_details od ON od.order_id = o.id "
-                    + "LEFT JOIN products p ON od.product_id = p.id "
+                    + "FROM tblOrders o "
+                    + "JOIN tblCustomers c ON o.customer_id = c.id "
+                    + "LEFT JOIN tblOrderDetails od ON od.order_id = o.id "
+                    + "LEFT JOIN tblProducts p ON od.product_id = p.id "
                     + "WHERE o.id = ? "
                     + "ORDER BY od.order_id";
 

@@ -23,7 +23,7 @@ public class UserDAO {
     public Optional<User> findByUsername(String username) throws SQLException {
         try (Connection connection = DBConnection.getConnection()) {
             String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
-                    + "FROM users WHERE username = ?";
+                    + "FROM tblUsers WHERE username = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, username);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -39,7 +39,7 @@ public class UserDAO {
     public Optional<User> findByEmail(String email) throws SQLException {
         try (Connection connection = DBConnection.getConnection()) {
             String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
-                    + "FROM users WHERE email = ?";
+                    + "FROM tblUsers WHERE email = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, email);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -74,7 +74,7 @@ public class UserDAO {
     }
 
     private String insertUser(Connection connection, User user) throws SQLException {
-        String sql = "INSERT INTO users (username, password_hash, role, full_name, email, phone_number, created_at) "
+        String sql = "INSERT INTO tblUsers (username, password_hash, role, full_name, email, phone_number, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime createdAt = user.getCreatedAt();
         if (createdAt == null) {
