@@ -1,7 +1,7 @@
 package com.qlst.dao;
 
-import com.qlst.entity.Customer;
-import com.qlst.entity.User;
+import com.qlst.model.Customer;
+import com.qlst.model.User;
 import com.qlst.util.DBConnection;
 
 import java.sql.Connection;
@@ -60,8 +60,8 @@ public class UserDAO {
             boolean originalAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
             try {
-                long userId = insertUser(connection, user);
-                customer.setUserId(userId);
+                String userId = insertUser(connection, user);
+                customer.setUserAccountId(userId);
                 customerDAO.save(connection, customer);
                 connection.commit();
             } catch (SQLException ex) {
@@ -73,7 +73,7 @@ public class UserDAO {
         }
     }
 
-    private long insertUser(Connection connection, User user) throws SQLException {
+    private String insertUser(Connection connection, User user) throws SQLException {
         String sql = "INSERT INTO users (username, password_hash, role, full_name, email, phone_number, created_at) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         LocalDateTime createdAt = user.getCreatedAt();
@@ -92,7 +92,7 @@ public class UserDAO {
             statement.executeUpdate();
             try (ResultSet keys = statement.getGeneratedKeys()) {
                 if (keys.next()) {
-                    long id = keys.getLong(1);
+                    String id = keys.getString(1); // Changed to getString for VARCHAR ID
                     user.setId(id);
                     return id;
                 }
@@ -103,7 +103,7 @@ public class UserDAO {
 
     private User mapRow(ResultSet resultSet) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getLong("id"));
+        user.setId(resultSet.getString("id")); 
         user.setUsername(resultSet.getString("username"));
         user.setPasswordHash(resultSet.getString("password_hash"));
         user.setRole(resultSet.getString("role"));

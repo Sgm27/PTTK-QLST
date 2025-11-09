@@ -1,8 +1,8 @@
 package com.qlst.servlet;
 
 import com.qlst.dao.UserDAO;
-import com.qlst.entity.Customer;
-import com.qlst.entity.User;
+import com.qlst.model.Customer;
+import com.qlst.model.User;
 import com.qlst.util.PasswordUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -89,9 +89,9 @@ public class RegisterServlet extends HttpServlet {
         user.setCreatedAt(LocalDateTime.now());
 
         Customer customer = new Customer();
-        customer.setFullName(fullName);
+        customer.setName(fullName);
         customer.setEmail(email);
-        customer.setPhoneNumber(phone);
+        customer.setPhone(phone);
         customer.setAddress(StringUtils.defaultIfBlank(address, null));
         customer.setJoinedAt(LocalDateTime.now());
 

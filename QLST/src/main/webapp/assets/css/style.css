@@ -129,6 +129,11 @@ main {
     gap: 28px;
 }
 
+/* Trang có bảng rộng */
+.page--wide {
+    max-width: 1400px;
+}
+
 .page--centered .page-header {
     align-items: center;
     text-align: center;
@@ -327,6 +332,11 @@ textarea:focus {
     border-color: var(--blue-200);
 }
 
+.btn--sm {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+}
+
 .btn:focus-visible,
 .btn:hover {
     transform: translateY(-1px);
@@ -410,14 +420,88 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
 }
 
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.search-box__input {
+    flex: 1;
+    max-width: 500px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-box__input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-box__input:focus {
+    outline: none;
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+}
+
+.search-box__btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
 .table-wrapper {
     overflow-x: auto;
+}
+
+/* Bảng rộng hơn để hiển thị chi tiết */
+.table-wrapper--wide {
+    overflow-x: auto;
+    margin: 0 -28px;
+    padding: 0 28px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+}
+
+/* Bảng đơn hàng với header 2 cấp */
+.order-table {
+    table-layout: auto;
+}
+
+.order-table .details-header {
+    text-align: center;
+    background: var(--blue-50);
+    color: var(--text-muted);
+    font-weight: 600;
+    border-left: 2px solid var(--border-color);
+}
+
+.order-table .detail-subheader {
+    font-size: 0.88rem;
+    background: var(--blue-50);
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.order-table tbody td {
+    vertical-align: middle;
+}
+
+.order-table .empty-details {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    background: var(--blue-50);
 }
 
 thead {
@@ -428,12 +512,37 @@ td,
 th {
     padding: 12px;
     border-bottom: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
     text-align: left;
+    vertical-align: top;
+}
+
+td:last-child,
+th:last-child {
+    border-right: none;
 }
 
 th {
     font-weight: 600;
     color: var(--text-muted);
+}
+
+/* Các cột chi tiết có border đậm hơn */
+.order-table tbody td:nth-child(4),
+.order-table tbody td:nth-child(5),
+.order-table tbody td:nth-child(6),
+.order-table tbody td:nth-child(7) {
+    background: #fafbff;
+}
+
+/* Hover effect cho hàng */
+.order-table tbody tr:hover td {
+    background: var(--blue-50);
+}
+
+/* Căn lề phải cho các cột tiền */
+.text-right {
+    text-align: right;
 }
 
 .table-actions {
@@ -447,6 +556,36 @@ th {
     background: #ffffff;
     border-radius: var(--radius-card);
     border: 1px dashed var(--border-color);
+}
+
+.list-reset {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.order-detail-list {
+    display: grid;
+    gap: 8px;
+}
+
+.order-detail-list__item {
+    display: grid;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--blue-50);
+    border: 1px solid var(--border-color);
+}
+
+.order-detail-list__product {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.order-detail-list__empty {
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
 .meta-list {
@@ -507,6 +646,7 @@ th {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    flex: 1;
     min-width: 160px;
 }
 
@@ -515,6 +655,16 @@ th {
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.08em;
+}
+
+.summary-banner__value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Căn lề phải cho giá trị tiền trong summary banner */
+.summary-banner__item--money .summary-banner__value {
+    text-align: right;
 }
 
 .site-footer {
@@ -559,5 +709,66 @@ th {
     .button-row a {
         flex: 1 1 auto;
         text-align: center;
+    }
+}
+
+/* Features Grid for Management Dashboard */
+.features-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    margin-top: 24px;
+}
+
+.features-grid .card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.features-grid .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.15);
+    border-color: var(--blue-400);
+}
+
+.card__icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    display: block;
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.features-grid .card__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.features-grid .card__subtitle {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.features-grid .button-row {
+    margin-top: auto;
+    padding-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .features-grid {
+        grid-template-columns: 1fr;
     }
 }

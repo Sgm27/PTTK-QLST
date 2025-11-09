@@ -25,21 +25,30 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>CustomerStatisticsServlet</servlet-name>
-        <servlet-class>com.qlst.servlet.CustomerStatisticsServlet</servlet-class>
+        <servlet-name>CustomerStatisticServlet</servlet-name>
+        <servlet-class>com.qlst.servlet.CustomerStatisticServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>CustomerStatisticsServlet</servlet-name>
-        <url-pattern>/statistics/customers</url-pattern>
+        <servlet-name>CustomerStatisticServlet</servlet-name>
+        <url-pattern>/customer-statistic</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>TransactionDetailsServlet</servlet-name>
-        <servlet-class>com.qlst.servlet.TransactionDetailsServlet</servlet-class>
+        <servlet-name>OrderServlet</servlet-name>
+        <servlet-class>com.qlst.servlet.OrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>TransactionDetailsServlet</servlet-name>
-        <url-pattern>/statistics/transactions</url-pattern>
+        <servlet-name>OrderServlet</servlet-name>
+        <url-pattern>/customer-order</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CustomerOrderDetailServlet</servlet-name>
+        <servlet-class>com.qlst.servlet.CustomerOrderDetailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerOrderDetailServlet</servlet-name>
+        <url-pattern>/customer-order-detail</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -58,6 +67,18 @@
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
         <url-pattern>/statistics/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/customer-statistic</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/customer-order</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/customer-order-detail</url-pattern>
     </filter-mapping>
 
     <welcome-file-list>

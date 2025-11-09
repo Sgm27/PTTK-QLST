@@ -1,0 +1,47 @@
+1.Manager click “View Statistic” tại managerHome.jsp.
+2.managerHome.jsp gọi đến selectStatistic.jsp.
+3.selectStatistic.jsp hiển thị giao diện chọn loại thống kê cho Manager.
+4.Manager chọn tùy chọn “View Document Statistic”.
+5.selectStatistic.jsp gọi đến documentStatistic.jsp.
+6.documentStatistic.jsp hiển thị giao diện thống kê tài liệu.
+7.Manager nhập ngày bắt đầu, ngày kết thúc, rồi click “Search”.
+8.documentStatistic.jsp gửi yêu cầu đến DocumentStatisticServlet.
+9.DocumentStatisticServlet thực hiện phương thức doGet().
+10.DocumentStatisticServlet gọi DocumentStatisticDAO.
+11.DocumentStatisticDAO gọi phương thức getDocumentStatistic().
+12.getDocumentStatistic() khởi tạo đối tượng DocumentStatistic.
+13.DocumentStatistic gọi đến lớp Document để lấy thông tin chi tiết.
+14.Document trả kết quả cho DocumentStatistic.
+15.DocumentStatistic trả kết quả lại DocumentStatisticDAO.
+16.DocumentStatisticDAO trả kết quả về DocumentStatisticServlet.
+17.DocumentStatisticServlet trả dữ liệu cho documentStatistic.jsp.
+18.documentStatistic.jsp hiển thị kết quả thống kê tài liệu.
+19.Manager xem danh sách kết quả.
+20.documentStatistic.jsp hoàn thành hiển thị dữ liệu.
+21.Manager click vào một tài liệu cụ thể trong bảng thống kê.
+22.documentStatistic.jsp gọi đến BorrowSlipList.jsp.
+23.BorrowSlipList.jsp gọi BorrowSlipServlet.
+24.BorrowSlipServlet thực hiện phương thức doGet().
+25.BorrowSlipServlet gọi BorrowSlipDAO.
+26.BorrowSlipDAO thực hiện phương thức getBorrowSlipList().
+27.getBorrowSlipList() truy xuất dữ liệu từ CSDL.
+28.BorrowSlipDAO tạo đối tượng BorrowSlip.
+29.BorrowSlipDAO trả danh sách BorrowSlip cho BorrowSlipServlet.
+30.BorrowSlipServlet trả kết quả cho BorrowSlipList.jsp.
+31.BorrowSlipList.jsp hiển thị danh sách phiếu mượn tương ứng với tài liệu đó.
+32.Manager xem danh sách phiếu mượn.
+33.Manager click vào một phiếu mượn cụ thể trong danh sách.
+34.BorrowSlipList.jsp gọi đến BorrowSlipDetail.jsp.
+35.BorrowSlipDetail.jsp gọi BorrowSlipDetailServlet.
+36.BorrowSlipDetailServlet thực hiện phương thức doGet().
+37.BorrowSlipDetailServlet gọi BorrowSlipDetailDAO.
+38.BorrowSlipDetailDAO thực hiện phương thức getBorrowSlipDetail().
+39.getBorrowSlipDetail() khởi tạo đối tượng BorrowSlipDetail.
+40.BorrowSlipDetail gọi đến lớp BorrowSlip để lấy thông tin chung của phiếu.
+41.BorrowSlipDetail gọi đến lớp DocumentDetail để lấy thông tin chi tiết tài liệu trong phiếu.
+42.DocumentDetail trả dữ liệu về BorrowSlipDetail.
+43.BorrowSlipDetail trả gói dữ liệu hoàn chỉnh cho BorrowSlipDetailDAO.
+44.BorrowSlipDetailDAO trả dữ liệu về BorrowSlipDetailServlet.
+45.BorrowSlipDetailServlet trả dữ liệu cho BorrowSlipDetail.jsp.
+46.BorrowSlipDetail.jsp hiển thị chi tiết phiếu mượn.
+47.Manager xem thông tin chi tiết phiếu mượn (tài liệu, người mượn, ngày mượn, ngày trả,…).

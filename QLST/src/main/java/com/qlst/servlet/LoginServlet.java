@@ -1,7 +1,7 @@
 package com.qlst.servlet;
 
 import com.qlst.dao.UserDAO;
-import com.qlst.entity.User;
+import com.qlst.model.User;
 import com.qlst.util.PasswordUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("currentUser") != null) {
-            resp.sendRedirect(req.getContextPath() + "/statistics/customers");
+            resp.sendRedirect(req.getContextPath() + "/jsp/MainManagement.jsp");
             return;
         }
 
@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
             authenticated.setPasswordHash(null);
             HttpSession session = req.getSession(true);
             session.setAttribute("currentUser", authenticated);
-            resp.sendRedirect(req.getContextPath() + "/statistics/customers");
+            resp.sendRedirect(req.getContextPath() + "/jsp/MainManagement.jsp");
         } catch (SQLException e) {
             throw new ServletException("Không thể xử lý đăng nhập: " + e.getMessage(), e);
         }

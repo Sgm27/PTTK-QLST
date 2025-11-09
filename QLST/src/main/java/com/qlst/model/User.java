@@ -1,40 +1,25 @@
-package com.qlst.entity;
+package com.qlst.model;
 
 import java.time.LocalDateTime;
 
 /**
- * Represents a system user including employees and customers.
+ * Represents a system user account used for authentication and authorisation.
  */
 public class User {
-    private Long id;
+    private String id; 
     private String username;
     private String passwordHash;
-    private String role; // MANAGER, WAREHOUSE, SALES, CUSTOMER
+    private String role;
     private String fullName;
     private String email;
     private String phoneNumber;
     private LocalDateTime createdAt;
 
-    public User() {
-    }
-
-    public User(Long id, String username, String passwordHash, String role, String fullName,
-                String email, String phoneNumber, LocalDateTime createdAt) {
-        this.id = id;
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.fullName = fullName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.createdAt = createdAt;
-    }
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -94,3 +79,4 @@ public class User {
         this.createdAt = createdAt;
     }
 }
+
