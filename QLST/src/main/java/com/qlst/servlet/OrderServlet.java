@@ -66,13 +66,13 @@ public class OrderServlet extends HttpServlet {
 
             List<Order> orders;
             float totalPrice;
-            try (OrderDAO orderDAO = new OrderDAO()) {
+            Customer customer;
+            try (OrderDAO orderDAO = new OrderDAO(); CustomerDAO customerDAO = new CustomerDAO()) {
                 orders = orderDAO.getOrderList(customerId, startDate, endDate);
                 totalPrice = orderDAO.sumTotalPrice(orders);
+                customer = customerDAO.resolveCustomer(customerId, orders);
             }
 
-            CustomerDAO customerDAO = new CustomerDAO();
-            Customer customer = customerDAO.resolveCustomer(customerId, orders);
             CustomerStatistic customerStatistic = new CustomerStatistic(customer, totalPrice);
 
             request.setAttribute("lstOrder", orders);

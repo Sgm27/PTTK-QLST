@@ -21,7 +21,6 @@ import java.util.List;
 public class RegisterServlet extends HttpServlet {
 
     private static final String FORM_VIEW = "/jsp/FillInformation.jsp";
-    private final UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,7 +40,11 @@ public class RegisterServlet extends HttpServlet {
         validateRequiredFields(formData, rawPassword, errors);
 
         if (errors.isEmpty()) {
-            validateUniqueness(formData, errors);
+            try (UserDAO userDAO = new UserDAO()) {
+                userDAO.validateUniqueness(formData.getName(), formData.getEmail(), errors);
+            } catch (SQLException e) {
+                throw new ServletException("Không thể kiểm tra được tính duy nhất của tên đăng nhập/email.", e);
+            }
         }
 
         if (!errors.isEmpty()) {
@@ -57,14 +60,14 @@ public class RegisterServlet extends HttpServlet {
             savedSuccessfully = memberDAO.saveInformation(memberToPersist);
         } catch (SQLException e) {
             log("Unable to persist member registration", e);
-            errors.add("Khong the tao tai khoan moi. Vui long thu lai sau.");
+            errors.add("Không thể tạo tài khoản mới. Vui lòng thử lại sau.");
             req.setAttribute("errors", errors);
             forwardToForm(req, resp);
             return;
         }
 
         if (!savedSuccessfully) {
-            errors.add("Khong the tao tai khoan moi. Vui long thu lai sau.");
+            errors.add("Không thể tạo tài khoản mới. Vui lòng thử lại sau.");
             req.setAttribute("errors", errors);
             forwardToForm(req, resp);
             return;
@@ -86,28 +89,15 @@ public class RegisterServlet extends HttpServlet {
 
     private void validateRequiredFields(Member formData, String rawPassword, List<String> errors) {
         if (StringUtils.isBlank(formData.getName())) {
-            errors.add("Ho va ten khong duoc de trong.");
+            errors.add("Họ và tên không được để trống.");
         }
         if (StringUtils.isBlank(rawPassword)) {
-            errors.add("Mat khau khong duoc de trong.");
+            errors.add("Mật khẩu không được để trống.");
         } else if (rawPassword.length() < 8) {
-            errors.add("Mat khau phai co it nhat 8 ky tu.");
+            errors.add("Mật khẩu phải có ít nhất 8 ký tự.");
         }
         if (StringUtils.isBlank(formData.getEmail())) {
-            errors.add("Email khong duoc de trong.");
-        }
-    }
-
-    private void validateUniqueness(Member formData, List<String> errors) throws ServletException {
-        try {
-            if (userDAO.findByUsername(formData.getName()).isPresent()) {
-                errors.add("Ten dang nhap da ton tai. Vui long chon ten khac.");
-            }
-            if (userDAO.findByEmail(formData.getEmail()).isPresent()) {
-                errors.add("Email da duoc su dung.");
-            }
-        } catch (SQLException e) {
-            throw new ServletException("Khong the kiem tra tinh duy nhat cua ten dang nhap/email.", e);
+            errors.add("Email không được để trống.");
         }
     }
 

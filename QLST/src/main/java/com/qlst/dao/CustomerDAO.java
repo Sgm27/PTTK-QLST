@@ -14,7 +14,11 @@ import java.util.List;
 /**
  * Data access layer for {@link Customer} profiles.
  */
-public class CustomerDAO {
+public class CustomerDAO extends DAO {
+
+    public CustomerDAO() {
+        super();
+    }
 
     public void save(Connection connection, Customer customer) throws SQLException {
         if (customer.getUserAccountId() == null) {
@@ -59,6 +63,6 @@ public class CustomerDAO {
                 }
             }
         }
-        throw new SQLException("Khong the lay ma khach hang sau khi tao ho so.");
+        throw new SQLException("Can not resolve customer ID for user ID: " + customer.getUserAccountId());
     }
 }

@@ -19,8 +19,6 @@ import java.util.Optional;
  */
 public class LoginServlet extends HttpServlet {
 
-    private final UserDAO userDAO = new UserDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
@@ -50,7 +48,7 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        try {
+        try (UserDAO userDAO = new UserDAO()) {
             Optional<User> userOptional = userDAO.findByUsername(username);
             if (userOptional.isEmpty() || !PasswordUtil.matches(password, userOptional.get().getPasswordHash())) {
                 req.setAttribute("error", "Tên đăng nhập hoặc mật khẩu không chính xác.");

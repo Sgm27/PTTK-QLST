@@ -85,6 +85,6 @@ public class MemberDAO extends DAO {
                 }
             }
         }
-        throw new SQLException("Khong the lay ma nguoi dung sau khi tao thanh vien.");
+        throw new SQLException("Can not retrieve user ID for username: " + username);
     }
 }

@@ -95,7 +95,6 @@ public class OrderDAO extends DAO {
 
     private OrderDetail mapOrderDetail(ResultSet resultSet) throws SQLException {
         OrderDetail detail = new OrderDetail();
-        // Note: OrderDetail no longer has an id field
 
         BigDecimal linePrice = resultSet.getBigDecimal("order_detail_price");
         if (linePrice != null) {

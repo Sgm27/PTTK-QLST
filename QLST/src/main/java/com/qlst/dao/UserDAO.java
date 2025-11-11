@@ -2,7 +2,6 @@ package com.qlst.dao;
 
 import com.qlst.model.Customer;
 import com.qlst.model.User;
-import com.qlst.util.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,39 +14,62 @@ import java.util.Optional;
 /**
  * Data access layer for {@link User} entities focused on authentication flows.
  */
-public class UserDAO {
+public class UserDAO extends DAO {
 
     private final CustomerDAO customerDAO = new CustomerDAO();
 
+    public UserDAO() {
+        super();
+    }
+
     public Optional<User> findByUsername(String username) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
-                    + "FROM tblUsers WHERE username = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, username);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return Optional.of(mapRow(resultSet));
-                    }
+        String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
+                + "FROM tblUsers WHERE username = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
                 }
             }
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     public Optional<User> findByEmail(String email) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
-                    + "FROM tblUsers WHERE email = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, email);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return Optional.of(mapRow(resultSet));
-                    }
+        String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
+                + "FROM tblUsers WHERE email = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
                 }
             }
-            return Optional.empty();
+        }
+        return Optional.empty();
+    }
+
+    public Optional<User> findByPhoneNumber(String phoneNumber) throws SQLException {
+        String sql = "SELECT id, username, password_hash, role, full_name, email, phone_number, created_at "
+                + "FROM tblUsers WHERE phone_number = ?";
+        try (PreparedStatement statement = con.prepareStatement(sql)) {
+            statement.setString(1, phoneNumber);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(mapRow(resultSet));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void validateUniqueness(String phoneNumber, String email, java.util.List<String> errors) throws SQLException {
+        if (findByPhoneNumber(phoneNumber).isPresent()) {
+            errors.add("So dien thoai da duoc su dung. Vui long chon so khac.");
+        }
+        if (findByEmail(email).isPresent()) {
+            errors.add("Email da duoc su dung.");
         }
     }
 
@@ -55,20 +77,18 @@ public class UserDAO {
      * Persist a new customer account including the associated customer profile in a single transaction.
      */
     public void createCustomerAccount(User user, Customer customer) throws SQLException {
-        try (Connection connection = DBConnection.getConnection()) {
-            boolean originalAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
-            try {
-                String userId = insertUser(connection, user);
-                customer.setUserAccountId(userId);
-                customerDAO.save(connection, customer);
-                connection.commit();
-            } catch (SQLException ex) {
-                connection.rollback();
-                throw ex;
-            } finally {
-                connection.setAutoCommit(originalAutoCommit);
-            }
+        boolean originalAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false);
+        try {
+            String userId = insertUser(con, user);
+            customer.setUserAccountId(userId);
+            customerDAO.save(con, customer);
+            con.commit();
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(originalAutoCommit);
         }
     }
 
@@ -121,6 +141,6 @@ public class UserDAO {
                 }
             }
         }
-        throw new SQLException("Khong the lay ma nguoi dung sau khi tao tai khoan.");
+        throw new SQLException("Can not retrieve user ID for username: " + username);
     }
 }
